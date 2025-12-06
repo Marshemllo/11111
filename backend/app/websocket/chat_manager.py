@@ -17,6 +17,8 @@ class ConnectionManager:
         self.room_members: Dict[int, Set[int]] = {}
         # 用户所在房间: {user_id: Set[room_id]}
         self.user_rooms: Dict[int, Set[int]] = {}
+        # 用户名映射: {user_id: username}
+        self.usernames: Dict[int, str] = {}
     
     async def connect(self, websocket: WebSocket, user_id: int):
         """
@@ -46,6 +48,18 @@ class ConnectionManager:
                 if room_id in self.room_members:
                     self.room_members[room_id].discard(user_id)
             del self.user_rooms[user_id]
+        
+        # 移除用户名
+        if user_id in self.usernames:
+            del self.usernames[user_id]
+    
+    def set_username(self, user_id: int, username: str):
+        """设置用户名"""
+        self.usernames[user_id] = username
+    
+    def get_username(self, user_id: int) -> str:
+        """获取用户名"""
+        return self.usernames.get(user_id, f"用户{user_id}")
     
     def join_room(self, user_id: int, room_id: int):
         """

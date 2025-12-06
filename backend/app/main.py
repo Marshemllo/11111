@@ -66,19 +66,31 @@ async def websocket_chat(websocket: WebSocket, user_id: int):
             
             if message_type == "join_room":
                 room_id = data.get("room_id")
+                username = data.get("username", f"用户{user_id}")
                 manager.join_room(user_id, room_id)
+                # 保存用户名
+                manager.set_username(user_id, username)
                 # 通知房间其他成员
                 await manager.broadcast_to_room(
-                    {"type": "user_joined", "user_id": user_id},
+                    {
+                        "type": "user_joined", 
+                        "user_id": user_id,
+                        "username": username
+                    },
                     room_id,
                     exclude_user=user_id
                 )
             
             elif message_type == "leave_room":
                 room_id = data.get("room_id")
+                username = manager.get_username(user_id)
                 manager.leave_room(user_id, room_id)
                 await manager.broadcast_to_room(
-                    {"type": "user_left", "user_id": user_id},
+                    {
+                        "type": "user_left", 
+                        "user_id": user_id,
+                        "username": username
+                    },
                     room_id
                 )
             
