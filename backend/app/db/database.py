@@ -63,7 +63,10 @@ def init_db():
     创建所有表结构
     """
     # 导入所有模型以确保它们被注册
-    from app.db.models import User, Menu, SpiderRule, DataSource, Report, ChatMessage, ChatRoom
+    from app.db.models import (
+        User, Menu, SpiderRule, DataSource, Report, ChatMessage, ChatRoom,
+        AIEngine, AIConversation, InfoCategory, InfoDocument, InfoKeyword, InfoStatistics
+    )
     
     Base.metadata.create_all(bind=engine)
 

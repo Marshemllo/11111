@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./assets/font-awesome/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GemDesign</title>
+    <script src="./assets/javascript/vue.global.js"></script>
+    <!-- 引入Vditor的CSS和JS -->
+    <link rel="stylesheet" href="./assets/css/docModal.css">
+    <link rel="stylesheet" href="./assets/vditor/dist/index.css">
+    <script src="./assets/vditor/dist/index.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        body {
+            height: 100vh;
+            margin: 0; /* 去掉默认的边距 */
+            padding: 0; /* 去掉默认的内边距 */
+            display: flex; /* 使用 flexbox 布局 */
+            flex-direction: column; /* 垂直排列内容 */
+            min-height: 100vh; /* 确保 body 至少占满视口高度 */
+            font-size: 14px;
+        }
+
+        body #app {
+            height: 100%;
+        }
+        .overflow-auto {
+            overflow: auto;
+        }
+        .iframePC {
+            width: 100%; /* 设置 iframe 宽度为 100% */
+            border: none; /* 去掉边框 */
+            height: 100%;
+        }
+
+        .ai-tag {
+            width: 208px;
+            height: 40px;
+            padding-right: 12px;
+            border-radius: 6px;
+            background: #171313;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: fixed;
+            right: 20px;
+            bottom: 28px;
+            z-index: 9999;
+        }
+
+        .ai-tag .custom-text-prefix {
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 24px;
+            font-family: Source Han Sans CN, Source Han Sans CN;
+            text-align: left;
+            font-style: normal;
+            color: #ADB5C1;
+            text-transform: none;
+            line-height: 38px;
+        }
+
+        .ai-tag .custom-text-sufix {
+            font-weight: 700;
+            font-size: 12px;
+            line-height: 24px;
+            font-family: Source Han Sans CN, Source Han Sans CN;
+            text-align: left;
+            font-style: normal;
+            color: #FFFFFF;
+            text-transform: none;
+            line-height: 38px;
+        }
+
+        .ai-tag img.img-logo {
+            width: 22px;
+            margin: 0 6px;
+        }
+
+        .ai-tag img.ai-tag-close {
+            width: 8px;
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            object-fit: none;
+        }
+    </style>
+    <style>
+        /* app样式 */
+        .preview-suitable-app {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-suitable-content-app {
+            height: calc(100% - 12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-border {
+            position: relative;
+            border-radius: 30px 30px 30px 30px;
+            border: 4px solid rgb(51, 51, 51);
+            overflow: hidden;
+        }
+
+        .preview-suitable-app iframe {
+            height: 100%;
+            width: 100%;
+            border: none; /* 去掉边框 */
+        }
+
+        .preview-web {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .preview-web iframe {
+            flex-shrink: 0
+        }
+    </style>
+
+    <style>
+        /* 页面顶部样式 */
+        .w-70px {
+            width: 70px;
+        }
+
+        .w-140px {
+            width: 140px;
+        }
+
+        .w-260px {
+            width: 260px;
+        }
+
+        .h-28px {
+            height: 28px;
+        }
+
+        .h-48px {
+            height: 48px;
+        }
+
+        .h-40px {
+            height: 40px;
+        }
+        .h-42px{
+            height: 42px;
+        }
+
+        .h-32px {
+            height: 32px;
+        }
+
+        .page-top {
+            color: #333333;
+        }
+
+        .appName {
+            font-size: 16px;
+            margin-right: 30px;
+        }
+
+        .previewList {
+            width: 140px;
+            overflow: hidden !important;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .previewList .first-option {
+            position: relative;
+        }
+
+        .previewList .first-option:after {
+            content: '';
+            width: 100%;
+            height: 1px;
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            background-color: #dbdbdb;
+        }
+
+        .previewList .option-item:hover {
+            background-color: #3C8EFF;
+        }
+
+        .previewList .option-item.selected {
+            background-color: #3C8EFF;
+        }
+
+        /* 全局下拉框样式重置 */
+        select.previewList {
+            padding: 5px 11px;
+        }
+
+        select.previewList option {
+            margin-bottom: 5px;
+        }
+
+        /* 禁用焦点样式 */
+        select option:focus {
+            outline: none !important;
+            background-color: transparent !important;
+        }
+
+        select.previewList option:checked,
+        select.previewList option:checked:focus {
+
+        }
+
+        .tool-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-right: 20px;
+        }
+
+        .tool-right .JmHideOperatePanel {
+            height: 30px;
+            padding: 4px 10px;
+            border-radius: 4px 4px 4px 4px;
+            border: 1px solid #D3D3D3;
+            font-weight: 400;
+            font-size: 14px;
+            color: #333333;
+            line-height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .ml-16px {
+            margin-left: 16px;
+        }
+
+        .ml-10px {
+            margin-left: 10px;
+        }
+
+        .mr-10px {
+            margin-right: 10px;
+        }
+        .mr-3px {
+            margin-right: 3px;
+        }
+
+        .page {
+            height: calc(100% - 48px);
+        }
+
+        .page.preview {
+            height: 100%;
+        }
+
+        .page-content {
+            background: #F2F3F6;
+        }
+
+        /* 页面列表 */
+        .page-left {
+            font-size: 12px;
+            line-height: 16px;
+            color: #333333;
+        }
+
+        .tree-menu {
+            height: calc(100% - 42px);
+            overflow: auto;
+        }
+
+        .tip {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 410px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FFFFFF;
+            box-shadow: 0px 0px 20px 0px rgba(163, 170, 190, 0.3);
+            border-radius: 200px 200px 200px 200px;
+            font-size: 14px;
+            color: #3D3D3D;
+            gap: 10px;
+        }
+        .preview-title {
+            font-size: 14px;
+            font-family: PingFang SC, PingFang SC;
+            color: #999;
+        }
+
+    </style>
+    <script src="./assets/css/tailwindcss.css"></script>
+    <script src="./assets/javascript/tool.js"></script>
+    <script src="./assets/javascript/docModal.js"></script>
+    <script src="./assets/javascript/initData.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="page-top" v-if="!isPreview">
+        <div class="flex justify-between items-center border-b h-48px">
+            <div class="flex items-center">
+                <h1 class="appName ml-16px font-bold">{{appName}}</h1>
+                <p style="line-height: 16px;">当前页面：{{pageName}}</p>
+            </div>
+            <div class="flex items-center">
+                <span class="mr-[8px] text-[#666666]">尺寸:</span>
+                <select class="mr-[8px] rounded previewList w-140px h-28px outline-none bg-[#F3F3F3] pl-[7px] pr-[11px] text-[13px]"
+                        v-model="previewSize">
+                    <option :class="`option-item w-[140px] text-[13px] h-[26px] mb-[5px] px-[6px] hover:bg-[#0000000a] ${!index && 'first-option' || ''} ${'selected'&& previewSize === opt.value||'' }`"
+                            v-for="(opt, index) in previewSizeOptions" :key="opt.value" :value="opt.value" :w="opt.w"
+                            :h="opt.h">{{opt.label}}
+                    </option>
+                </select>
+                <input type="text" @change="changeAutoSize" :disabled="!(previewSize==='auto')" v-model="previewSizeW"
+                       class="rounded text-center outline-none w-70px h-28px bg-[#F3F3F3]">
+                <span>×</span>
+                <input type="text" @bur="changeAutoSize" :disabled="!(previewSize==='auto')" v-model="previewSizeH"
+                       class="rounded text-center outline-none w-70px h-28px bg-[#F3F3F3]">
+            </div>
+            <div class="tool-right">
+                <div class="JmHideOperatePanel" @click="showDoc">需求文档</div>
+                <img @click="toPreview" src="./assets/img/show.png" alt="">
+                <img @click="changeCurrentIndex(-1)"
+                     :src="currentIndex === 0 ? './assets/img/left-not.png' : './assets/img/left-on.png'" alt="">
+                <img @click="changeCurrentIndex(1)"
+                     :src="currentIndex === pageList.length - 1 ? './assets/img/right-not.png': './assets/img/right-on.png'"
+                     alt="">
+            </div>
+        </div>
+    </div>
+    <div :class="['page', 'flex', {'preview': isPreview || !appName}]">
+        <div class="page-left flex-[0_0_197px] border-r overflow-auto" v-if="!isPreview && appName">
+            <div class=" h-42px flex items-center">
+                <h2 class="ml-12px px-4 font-black preview-title">页面</h2>
+            </div>
+            <div class="tree-menu px-[10px] pt-[10px]">
+                <tree-node
+                        v-for="(node, index) in treeData"
+                        :key="node.id"
+                        :node="node"
+                        @node-click="handleChangePage"
+                        :selectId="pageUuid">
+                </tree-node>
+            </div>
+        </div>
+        <div class="page-content"
+             :style="{width:!isPreview && appName ? 'calc(100vw - 197px)': '100%', padding: appName && !isPreview ? '5px' : '', background:pageType === 'app'?'#ffffff':'#F2F3F6'}">
+            <div v-if="pageType === 'app'" class="preview-suitable-app">
+                <div class="preview-suitable-content-app">
+                    <div class="app-border">
+                        <div :style="{width:previewSizeW+'px',height:previewSizeH+'px'}">
+                            <template v-if="isHtml">
+                                <iframe @load="loadHtmlIframe" id="iframeApp" style="border: none;"></iframe>
+                            </template>
+                            <template v-else>
+                                <iframe id="vueIframeApp" style="border: none;" :src="url"
+                                        @load="vueIfameloaded"></iframe>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else class="preview-web">
+                <template v-if="isHtml">
+                    <iframe id="iframe" @load="loadHtmlIframe"
+                            :style="{width:previewSizeW+'px',height:previewSizeH+'px'}" class="iframePC"
+                            style="border: none;"></iframe>
+                </template>
+                <template v-else>
+                    <iframe id="vueIframeWeb" :style="{width:previewSizeW+'px',height:previewSizeH+'px'}" :src="url"
+                            @load="vueIfameloaded"></iframe>
+                    ></iframe>
+                </template>
+            </div>
+            <div class="ai-tag" >
+                <span class="custom-text-prefix">Designed by</span>
+                <img id="dynamicLogo" class="img-logo" src="./assets/img/ai-tag-design-img.png"/>
+                <span id="dynamicText" class="custom-text-sufix">GemDesign</span>
+                <img class="ai-tag-close" src="./assets/img/ai-tag-close.png"/>
+            </div>
+        </div>
+    </div>
+    <div v-if="isPreview && isShowTip" class="tip">
+        <p>按Esc键显示操作面板，按</p>
+        <img src="./assets/img/left-esc.png" alt="">
+        <img src="./assets/img/right-esc.png" alt="">
+        <p>可切换页面</p>
+    </div>
+    <div class="vditor-mask modal-mask" id="vditor-mask"></div>
+    <div class="modal vditor-modal" id="modal">
+        <div class="modal-header" id="modalHeader">
+            <span class="modal-title" :title="`${pageName}页面功能需求文档`">{{pageName}}页面功能需求文档</span>
+            <img class="close-btn" id="closeModal" src="./assets/img/close-doc-modal.png"/>
+        </div>
+        <div class="modal-content" id="modalContent">
+            <div class="markdown-body" id="vditor">
+            </div>
+            <div class="doc-empty-data">
+                <img src="./assets/img/doc-empty.png"/>
+                <span>当前页的需求文档是空白的</span>
+            </div>
+        </div>
+        <div class="resize-handle top" data-direction="top"></div>
+        <div class="resize-handle right" data-direction="right"></div>
+        <div class="resize-handle bottom" data-direction="bottom"></div>
+        <div class="resize-handle left" data-direction="left"></div>
+    </div>
+</div>
+<script src="./assets/javascript/index.js"></script>
+<script>
+    window.addEventListener('load', function () {
+        document.querySelector('.ai-tag img.ai-tag-close')?.addEventListener('click', (e) => {
+            e.stopPropagation()
+            document.querySelector('.ai-tag').style.display = 'none'
+        })
+        document.querySelector('.ai-tag')?.addEventListener('click', () => {
+            window.open(`https://design.gemcoder.com/#/?ci=fx`)
+        })
+    });
+</script>
+</body>
+
+</html>

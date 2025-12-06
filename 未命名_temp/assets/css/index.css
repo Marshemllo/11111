@@ -1,0 +1,391 @@
+
+.page-list-title span {
+    font-weight: 900;
+}
+.page-list-title svg {
+    font-size: 14px;
+}
+.page-list {
+    font-size: 12px;
+    flex: 0 0 294px;
+    overflow-y: auto;
+    min-height: 152px;
+}
+.page-list .page-list-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 400;
+    align-items: center;
+    position: relative;
+    height: 42px;
+    padding: 0 10px 0 16px;
+}
+.page-list .page-list-title .page-list-title-btns svg,
+.page-list .page-list-title .search-container svg{
+    font-size: 12px;
+}
+.page-list .page-list-title .page-list-title-btns{
+    display: flex;
+    gap: 2px;
+    justify-content:end;
+}
+.page-list .page-list-title .page-list-title-btns  span,
+.page-list .page-list-title .search-container> .hide-search-btn {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center
+}
+.page-list .page-list-title .search-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 42px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 14px;
+    gap: 13px;
+}
+.search-container .ant-input-affix-wrapper {
+    padding: 0 12px;
+}
+.search-container .ant-input-affix-wrapper .ant-input-prefix{
+    margin-right: 9px;
+}
+.copy-page{
+    .ant-dropdown-menu-title-content{
+        display: flex;
+        align-items: center;
+    }
+}
+.page-operate-icon {
+  display: flex;
+  width: 12px;
+  height: 12px;
+  margin-right: 7px;
+  margin-left: 1px;
+}
+.page-search {
+    width: calc(100% - 48px);
+    margin-top: 8px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    height: 28px;
+    border-radius: 4px 4px 4px 4px;
+    border: none;
+}
+
+.add-square {
+    width: 220px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px 4px 4px 4px;
+    cursor: pointer;
+    padding: 29px 0 25px 0;
+}
+.add-square.add-page-ai {
+    padding: 21px 0 25px 0;
+}
+.add-square.add-page-ai .add-square-icon{
+    margin-bottom: 0;
+}
+.add-square.add-page-ai .add-square-name {
+    margin-bottom: 0!important
+}
+.add-square .add-square-icon{
+    margin-bottom: 13px;
+}
+
+.add-square-name {
+    width: 110px !important;
+    height: 20px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    font-style: normal;
+    text-transform: none;
+    border: unset !important;
+    margin-bottom: 10px !important;
+}
+.yt-ui-input-focus:focus{
+    border: unset !important;
+    box-shadow:none !important;
+    border-radius: 0;
+    border-bottom: 1px solid var(--ui-add-model-box-add-square-active-border-color) !important;
+}
+
+.add-square-size {
+    width: 46px !important;
+    height: 20px;
+    padding:0;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    font-style: normal;
+    text-transform: none;
+    border: unset !important;
+}
+.add-page-model .ant-modal-content{
+    padding: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.add-page-model .ant-modal-content .ant-modal-header{
+    padding: 16px 30px 16px 32px;
+    margin-bottom: 0px;
+}
+.add-page-model .ant-modal-content .ant-modal-header .ant-modal-title{
+    font-size: 14px;
+}
+.add-page-model .ant-modal-content .ant-modal-header .ant-modal-close-x{
+    font-size: 14px;
+}
+.add-page-model.ant-modal .ant-modal-body {
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 404px;
+    overflow-y: auto;
+    border-bottom: 1px solid #DBDBDB;
+    padding: 34px 52px 21px 44px;
+    column-gap: 30px;
+    row-gap: 24px;
+}
+.add-page-model .ant-modal-footer {
+    padding: 3px 24px 17px 24px;
+}
+.add-page-model.ant-modal .ant-modal-footer .ant-btn{
+    width: 80px;
+    font-size: 14px;
+    margin-right: 12px;
+    border-radius: 4px;
+}
+.add-page-model.ant-modal .ant-modal-footer .ant-btn:last-child{
+    margin-right: 0;
+    margin-inline-start: 0;
+}
+.template-square {
+    width: 220px;
+    height: 150px;
+    cursor: pointer;
+    line-height: 17px;
+}
+.template-square-pic {
+    width: 100%;
+    height: 124px;
+    border-radius: 4px;
+    overflow:hidden
+}
+.template-square-pic img {
+    width: 100%;
+    height: 100%;
+}
+ .template-square-content {
+    width:100%;
+    display: flex;
+    align-items: end;
+    height: 26px;
+    justify-content: space-between;
+}
+
+.template-square-title {
+    flex:1 1 100%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 2px;
+}
+.template-square-others {
+    flex: 1 0 50px;
+    display: flex;
+}
+.page-list .add-page-btn {
+    width: calc(100% - 20px);
+    border: 0;
+    border-radius: 4px 4px 4px 4px;
+    margin: 10px auto 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 20px;
+    font-family: PingFang SC, PingFang SC;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 17px;
+    text-align: left;
+    font-style: normal;
+    text-transform: none;
+    padding-left: 45px;
+}
+.page-list .add-page-btn img {
+    width: 12px;
+    object-fit: none;
+}
+.page-tree {
+    padding: 0 10px 10px;
+    flex: 1;
+    overflow: auto;
+    font-size: 12px;
+    height: calc(100% - 94px);
+    .ant-dropdown-link{
+        margin-right: 10px;
+    }
+    .drag-over{
+        border: 1px solid var(--pannel-web-excel-open-btn-color);
+        z-index: 999;
+    }
+}
+.page-tree .ant-tree-treenode,
+.page-tree .ant-tree-node-content-wrapper {
+    width: 100% !important;
+}
+
+.page-tree .ant-tree-treenode .ant-tree-node-content-wrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.page-tree .ant-tree-treenode .ant-tree-node-content-wrapper .ant-tree-icon__customize {
+    flex: 0 0 14px;
+    align-items: center;
+    display: inline-flex;
+    margin-left: 4px;
+}
+
+.page-tree .ant-tree-treenode .ant-tree-node-content-wrapper .ant-tree-title {
+    padding-left: 4px;
+    flex: 1;
+    width: 0;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+.page-tree .ant-tree-treenode .ant-tree-node-content-wrapper .page-tree-item-title {
+    position: relative;
+    width: calc(100% - 28px);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.page-tree .ant-tree-treenode .ant-tree-switcher {
+    line-height:32px;
+    width: 8px;
+    margin-right: 4px;
+}
+.page-tree .ant-tree-treenode .ant-tree-title {
+    min-height:32px;
+    line-height:32px;
+}
+.page-tree .ant-tree-node-content-wrapper:hover {}
+
+.page-tree .hover-hide {
+    position:absolute;
+    right: 4px;
+    font-size: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+}
+.page-tree .hover-hide> span {
+    margin-right: 8px;  
+    font-size: 14px;
+    display: none;
+}
+.page-tree .ant-dropdown-trigger:hover{
+    .hover-hide > span{
+        display: block;
+    }
+}
+
+.max-page-modal.ant-modal-wrap {
+    .ant-modal-header {
+        height: 48px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        .ant-modal-title {
+            flex: 1;
+        }
+    }
+    .ant-modal-content {
+        height: 380px;
+        padding: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        .ant-modal-close {
+            font-size: 14px;
+        }
+        .ant-modal-body {
+            flex: 1;
+            padding: 29px 51px 0 51px;
+            .tip {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 20px;
+                .max-page-icon.anticon {
+                    margin-right: 9px;
+                    font-size: 18px;
+                    transform: translateY(3px);
+                }
+                .tip-text {
+                    text-align: center;
+                    font-weight: 400;
+                    font-size: 14px;
+                    line-height: 24px;
+                    text-align: center;
+                    font-style: normal;
+                    text-transform: none;
+                }
+            }
+            .qrcode {
+                width: 170px;
+                height: 162px;
+                margin: 0 auto 11px;
+                padding: 10px;
+                display: flex;
+                border-radius: 4px 4px 4px 4px;
+                img {
+                    flex: 1;
+                    object-fit: contain;
+                }
+            }
+            .tel {
+                text-align: center;
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 28px;
+                font-style: normal;
+                text-transform: none;
+            }
+        }
+    }
+}
+.max-ai-page-modal.ant-modal-wrap {
+    .ant-modal-content {
+        height: 320px;
+        .ant-modal-body {
+            padding: 34px 51px 0 51px;
+        }
+        .ant-modal-body .qrcode {
+            margin: 0 auto 16px
+        }
+        .ant-modal-close {
+            top: 13px;
+        }
+    }
+}

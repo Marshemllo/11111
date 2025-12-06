@@ -1,0 +1,227 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.vditor-mask.modal-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
+}
+
+.vditor-mask.modal-mask.show {
+  display: block;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 1000;
+}
+
+.modal.vditor-modal {
+  position: absolute;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px rgba(163,170,190,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  display: none;
+  z-index: 9999;
+  min-width: 320px;
+  min-height: 320px;
+}
+.modal.vditor-modal.show {
+  display: flex;
+}
+
+.modal.vditor-modal .modal-header {
+  padding: 12px 16px;
+  background: white;
+  border-bottom: 1px solid #EBEBEB;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.modal.vditor-modal .modal-title {
+  font-weight: bold;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.modal.vditor-modal .close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.modal.vditor-modal .close-btn:hover {
+  background: #e0e0e0;
+}
+
+.modal.vditor-modal .modal-content {
+  flex: 1;
+  overflow: auto;
+}
+
+.modal.vditor-modal .modal-content .doc-empty-data {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 26px;
+}
+
+.modal.vditor-modal .modal-content .doc-empty-data.show {
+  display: flex;
+}
+
+.modal.vditor-modal .modal-content .doc-empty-data span{
+  white-space: nowrap;
+  font-family: Source Han Sans, Source Han Sans;
+  font-weight: 400;
+  font-size: 14px;
+  color: #3D3D3D;
+  line-height: 26px;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
+}
+
+.modal.vditor-modal .modal-content::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.modal.vditor-modal .modal-content::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: #8A8A8A;
+}
+
+.modal.vditor-modal .modal-content .vditor {
+  border: 0;
+}
+
+.modal.vditor-modal .modal-content .vditor .vditor-toolbar {
+  display: none;
+}
+
+.modal.vditor-modal .modal-content .markdown-body{
+  padding: 0;
+}
+
+.modal.vditor-modal .modal-content .markdown-body.hide{
+ display: none;
+}
+
+.modal.vditor-modal .modal-content .markdown-body .vditor-reset{
+  padding: 0;
+  pointer-events: none;
+  padding: 10px 16px !important;
+}
+
+.modal.vditor-modal .modal-content .markdown-body .vditor-reset *::before{
+  content: none;
+}
+
+.modal.vditor-modal .modal-content .markdown-body .vditor-reset h1, .modal.vditor-modal .modal-content .markdown-body .vditor-reset  h2, .modal.vditor-modal .modal-content .markdown-body .vditor-reset  h3, .modal.vditor-modal .modal-content .markdown-body .vditor-reset  h4, .modal.vditor-modal .modal-content .markdown-body .vditor-reset h5, .modal.vditor-modal .modal-content .markdown-body .vditor-reset  h6{
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 24px;
+  margin-top: 0 !important;
+}
+
+.modal.vditor-modal .modal-content .markdown-body .vditor-reset ul{
+  line-height: 24px;
+  margin-bottom: 10px;
+}
+
+.modal.vditor-modal .modal-content .markdown-body .vditor-reset p{
+  line-height: 26px;
+}
+
+.modal.vditor-modal .modal-content .markdown-body .vditor-reset hr {
+  background-color: #d9d9d9;
+  border: none;
+  height: 1px;
+}
+
+.modal.vditor-modal .markdown-body {
+  height: 100%;
+  overflow: auto;
+  padding: 10px;
+}
+
+/* 拖拽手柄样式 */
+.modal.vditor-modal .resize-handle {
+  position: absolute;
+  background: transparent;
+  z-index: 10;
+}
+
+.modal.vditor-modal .resize-handle.top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  cursor: n-resize;
+}
+
+.modal.vditor-modal .resize-handle.right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: e-resize;
+}
+
+.modal.vditor-modal .resize-handle.bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  cursor: s-resize;
+}
+
+.modal.vditor-modal .resize-handle.left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: w-resize;
+}
+
+/* 防止文本选择 */
+.modal.vditor-modal .modal-header,
+.modal.vditor-modal .resize-handle {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

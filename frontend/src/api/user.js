@@ -4,12 +4,12 @@ import request from './request'
  * 用户登录
  */
 export function login(data) {
-  const formData = new FormData()
-  formData.append('username', data.username)
-  formData.append('password', data.password)
+  const params = new URLSearchParams()
+  params.append('username', data.username)
+  params.append('password', data.password)
   
-  return request.post('/users/login', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+  return request.post('/users/login', params, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
   })
 }
 

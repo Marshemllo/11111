@@ -31,6 +31,10 @@
           <el-icon><Connection /></el-icon>
           <template #title>爬虫管理</template>
         </el-menu-item>
+        <el-menu-item index="/ai-engines">
+          <el-icon><Cpu /></el-icon>
+          <template #title>AI引擎管理</template>
+        </el-menu-item>
         <el-menu-item index="/reports">
           <el-icon><Document /></el-icon>
           <template #title>报告管理</template>

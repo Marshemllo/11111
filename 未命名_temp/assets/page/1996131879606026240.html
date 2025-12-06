@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="zh-CN">
+ <head> 
+  <meta charset="utf-8"> 
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"> 
+  <title>
+   数据要素平台 - 用户登录
+  </title> 
+  <script src="../javascript/reload.js">
+  </script> 
+  <script src="./1996131879606026240/resource_5214710000.js">
+  </script> 
+  <link href="./1996131879606026240/all.min.css" rel="stylesheet"> 
+  <script>
+   tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#4A90E2',
+        secondary: '#357ABD',
+        accent: '#36CFC9',
+        neutral: '#F5F7FA',
+        'neutral-dark': '#4E5969',
+        'neutral-light': '#C9CDD4',
+        success: '#00B42A',
+        warning: '#FF7D00',
+        danger: '#F53F3F',
+        'primary-light': '#E8F3FF'
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif']
+      },
+      boxShadow: {
+        'card': '0 4px 20px rgba(0, 0, 0, 0.08)',
+        'hover': '0 8px 30px rgba(0, 0, 0, 0.12)'
+      }
+    }
+  }
+};
+  </script> 
+  <style type="text/tailwindcss">
+   @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bg-gradient-primary {
+                background: linear-gradient(135deg, #165DFF 0%, #0E42D2 100%);
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .transition-all-300 {
+                transition: all 0.3s ease;
+            }
+            .input-focus-ring {
+                @apply ring-2 ring-primary/30 ring-offset-0;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-hover hover:-translate-y-1;
+            }
+        }
+  </style> 
+ </head> 
+ <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 font-sans"> 
+  <!-- [MODULE] a1b_登录页面容器 --> 
+  <div class="w-full max-w-6xl flex flex-col lg:flex-row bg-white rounded-2xl shadow-card overflow-hidden"> 
+   <!-- [MODULE] c3d_登录页面:左侧数据可视化区域 --> 
+   <div class="lg:w-1/2 bg-primary p-8 lg:p-12 text-white hidden lg:block"> 
+    <div class="h-full flex flex-col justify-between"> 
+     <!-- [MODULE] e5f_登录页面:左侧标题区域 --> 
+     <div> 
+      <div class="flex items-center mb-8"> 
+       <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center mr-3"> 
+        <i class="fas fa-chart-line text-xl"> </i> 
+       </div> 
+       <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-shadow"> 数据要素平台 </h1> 
+      </div> 
+      <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold leading-tight mb-4"> 数据驱动决策 <br> 智慧引领未来 </h2> 
+      <p class="text-white/80 text-lg mb-8 max-w-md"> 集成数据采集、分析、可视化于一体的政务数据管理平台，助力科学决策与高效治理 </p> 
+     </div> 
+     <!-- [/MODULE] e5f_登录页面:左侧标题区域 -- 包含平台logo、标题和简介文字 --> 
+     <!-- [MODULE] g7h_登录页面:左侧数据可视化图表 --> 
+     <div class="space-y-8"> 
+      <!-- [MODULE] i9j_登录页面:左侧图表1 --> 
+      <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 card-hover"> 
+       <h3 class="text-white font-medium mb-4 flex items-center"> <i class="fas fa-chart-bar mr-2"> </i> 数据增长趋势 </h3> 
+       <div class="h-48" id="growth-chart"> 
+       </div> 
+      </div> 
+      <!-- [/MODULE] i9j_登录页面:左侧图表1 -- 展示数据增长趋势的柱状图 --> 
+      <!-- [MODULE] k2l_登录页面:左侧图表2 --> 
+      <div class="grid grid-cols-2 gap-4"> 
+       <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 card-hover"> 
+        <h3 class="text-white font-medium mb-4 flex items-center"> <i class="fas fa-chart-pie mr-2"> </i> 数据分布 </h3> 
+        <div class="h-40" id="distribution-chart"> 
+        </div> 
+       </div> 
+       <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 card-hover"> 
+        <h3 class="text-white font-medium mb-4 flex items-center"> <i class="fas fa-chart-line mr-2"> </i> 舆情指数 </h3> 
+        <div class="h-40" id="sentiment-chart"> 
+        </div> 
+       </div> 
+      </div> 
+      <!-- [/MODULE] k2l_登录页面:左侧图表2 -- 包含数据分布饼图和舆情指数折线图 --> 
+     </div> 
+     <!-- [/MODULE] g7h_登录页面:左侧数据可视化图表 -- 展示平台相关数据统计图表 --> 
+     <!-- [MODULE] m4n_登录页面:左侧底部信息 --> 
+     <div class="mt-12 pt-6 border-t border-white/20"> 
+      <p class="text-white/60 text-sm"> © 2023 数据要素管理平台. 保留所有权利. </p> 
+     </div> 
+     <!-- [/MODULE] m4n_登录页面:左侧底部信息 -- 包含版权信息 --> 
+    </div> 
+   </div> 
+   <!-- [/MODULE] c3d_登录页面:左侧数据可视化区域 -- 包含标题、数据图表和底部信息，仅在大屏幕显示 --> 
+   <!-- [MODULE] p6q_登录页面:右侧登录表单区域 --> 
+   <div class="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center bg-gray-50"> 
+    <!-- [MODULE] r8s_登录页面:右侧移动端标题 --> 
+    <div class="flex items-center mb-8 lg:hidden"> 
+     <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center mr-3"> 
+      <i class="fas fa-chart-line text-white text-xl"> </i> 
+     </div> 
+     <h1 class="text-xl font-bold text-gray-800"> 数据要素平台 </h1> 
+    </div> 
+    <!-- [/MODULE] r8s_登录页面:右侧移动端标题 -- 在小屏幕显示的平台标题和logo --> 
+    <!-- [MODULE] t0u_登录页面:登录表单 --> 
+    <div class="max-w-md mx-auto w-full"> 
+     <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-gray-800 mb-2"> 欢迎登录 </h2> 
+     <p class="text-gray-500 mb-8"> 请输入您的账号信息以继续 </p> 
+     <!-- [MODULE] v2w_登录页面:登录表单内容 --> 
+     <form class="space-y-6" id="login-form"> 
+      <!-- [MODULE] x4y_登录页面:用户名输入框 --> 
+      <div> 
+       <label class="block text-sm font-medium text-gray-700 mb-1" for="username"> 用户名 </label> 
+       <div class="relative"> 
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"> 
+         <i class="fas fa-user"> </i> 
+        </div> 
+        <input class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:input-focus-ring transition-all-300" id="username" name="username" placeholder="请输入用户名" required type="text"> 
+       </div> 
+      </div> 
+      <!-- [/MODULE] x4y_登录页面:用户名输入框 -- 包含用户名标签和带用户图标的输入框 --> 
+      <!-- [MODULE] z6a_登录页面:密码输入框 --> 
+      <div> 
+       <div class="flex items-center justify-between mb-1"> 
+        <label class="block text-sm font-medium text-gray-700" for="password"> 密码 </label> 
+        <a class="text-sm text-primary hover:text-secondary transition-colors" href="javascript:void(0);"> 忘记密码? </a> 
+       </div> 
+       <div class="relative"> 
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"> 
+         <i class="fas fa-lock"> </i> 
+        </div> 
+        <input class="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 focus:outline-none focus:input-focus-ring transition-all-300" id="password" name="password" placeholder="请输入密码" required type="password"> 
+        <button class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors" id="toggle-password" type="button"> <i class="fas fa-eye-slash"> </i> </button> 
+       </div> 
+      </div> 
+      <!-- [/MODULE] z6a_登录页面:密码输入框 -- 包含密码标签、忘记密码链接、带锁图标的输入框和显示/隐藏密码按钮 --> 
+      <!-- [MODULE] b8c_登录页面:记住密码和登录按钮 --> 
+      <div class="space-y-4"> 
+       <div class="flex items-center"> 
+        <input class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded" id="remember-me" name="remember-me" type="checkbox"> 
+        <label class="ml-2 block text-sm text-gray-700" for="remember-me"> 记住我 </label> 
+       </div> 
+       <button class="w-full bg-primary hover:bg-secondary text-white font-medium py-3 px-4 rounded-lg transition-all-300 flex items-center justify-center group" id="login-button" type="submit"> <span> 登录 </span> <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"> </i> </button> 
+      </div> 
+      <!-- [/MODULE] b8c_登录页面:记住密码和登录按钮 -- 包含记住我复选框和登录按钮 --> 
+      <!-- [MODULE] d0e_登录页面:其他登录方式 --> 
+      <div class="relative"> 
+       <div class="absolute inset-0 flex items-center"> 
+        <div class="w-full border-t border-gray-300"> 
+        </div> 
+       </div> 
+       <div class="relative flex justify-center text-sm"> 
+        <span class="px-2 bg-white text-gray-500"> 其他登录方式 </span> 
+       </div> 
+      </div> 
+      <div class="flex justify-center space-x-4"> 
+       <button class="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-primary-light hover:text-primary hover:border-primary/30 transition-all-300" type="button"> <i class="fas fa-qrcode"> </i> </button> 
+       <button class="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-primary-light hover:text-primary hover:border-primary/30 transition-all-300" type="button"> <i class="fas fa-id-card"> </i> </button> 
+      </div> 
+      <!-- [/MODULE] d0e_登录页面:其他登录方式 -- 包含分隔线和二维码、身份证其他登录方式按钮 --> 
+     </form> 
+     <!-- [/MODULE] v2w_登录页面:登录表单内容 -- 包含用户名、密码输入框，记住密码选项，登录按钮和其他登录方式 --> 
+     <!-- [MODULE] f2g_登录页面:登录帮助信息 --> 
+     <div class="mt-10 text-center text-sm text-gray-500"> 
+      <p> 遇到登录问题? <a class="text-primary hover:text-secondary transition-colors" href="javascript:void(0);"> 联系管理员 </a> </p> 
+     </div> 
+     <!-- [/MODULE] f2g_登录页面:登录帮助信息 -- 包含登录问题帮助链接 --> 
+    </div> 
+    <!-- [/MODULE] t0u_登录页面:登录表单 -- 包含登录标题、表单内容和帮助信息 --> 
+   </div> 
+   <!-- [/MODULE] p6q_登录页面:右侧登录表单区域 -- 包含移动端标题和登录表单 --> 
+  </div> 
+  <!-- [/MODULE] a1b_登录页面容器 -- 包含左侧数据可视化区域和右侧登录表单区域 --> 
+  <!-- [MODULE] h3i_登录页面:登录状态提示框 --> 
+  <div class="fixed top-4 right-4 bg-white rounded-lg shadow-lg p-4 transform translate-x-full transition-transform duration-300 flex items-center max-w-sm z-50" id="toast"> 
+   <div class="mr-3 text-success" id="toast-icon"> 
+    <i class="fas fa-check-circle text-xl"> </i> 
+   </div> 
+   <div> 
+    <h4 class="font-medium text-gray-800" id="toast-title"> 操作成功 </h4> 
+    <p class="text-sm text-gray-500" id="toast-message"> 您已成功登录系统 </p> 
+   </div> 
+   <button class="ml-4 text-gray-400 hover:text-gray-600" id="close-toast"> <i class="fas fa-times"> </i> </button> 
+  </div> 
+  <!-- [/MODULE] h3i_登录页面:登录状态提示框 -- 用于显示登录成功或失败的提示信息 --> 
+  <!-- 引入echarts --> 
+  <script src="./1996131879606026240/echarts.min.js">
+  </script> 
+  <!-- [JSMOD] j5k_登录页面:密码显示切换功能 --> 
+  <script id="password-toggle-script">
+   document.addEventListener('DOMContentLoaded', function () {
+  var passwordInput = document.getElementById('password');
+  var togglePasswordButton = document.getElementById('toggle-password');
+  togglePasswordButton.addEventListener('click', function () {
+    // 切换密码可见性
+    var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+
+    // 切换图标
+    var icon = togglePasswordButton.querySelector('i');
+    if (type === 'password') {
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  });
+});
+  </script> 
+  <!-- [/JSMOD] j5k_登录页面:密码显示切换功能 -- 实现点击图标切换密码显示/隐藏状态 --> 
+  <!-- [JSMOD] l7m_登录页面:表单提交处理 --> 
+  <script id="form-submit-script">
+   document.addEventListener('DOMContentLoaded', function () {
+  var loginForm = document.getElementById('login-form');
+  var usernameInput = document.getElementById('username');
+  var passwordInput = document.getElementById('password');
+  var loginButton = document.getElementById('login-button');
+  var toast = document.getElementById('toast');
+  var toastIcon = document.getElementById('toast-icon');
+  var toastTitle = document.getElementById('toast-title');
+  var toastMessage = document.getElementById('toast-message');
+  var closeToast = document.getElementById('close-toast');
+
+  // 显示提示框
+  function showToast(title, message) {
+    var isSuccess = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+
+    // 设置图标和颜色
+    if (isSuccess) {
+      toastIcon.className = 'mr-3 text-success';
+      toastIcon.innerHTML = '<i class="fas fa-check-circle text-xl"></i>';
+    } else {
+      toastIcon.className = 'mr-3 text-danger';
+      toastIcon.innerHTML = '<i class="fas fa-exclamation-circle text-xl"></i>';
+    }
+
+    // 显示提示框
+    toast.classList.remove('translate-x-full');
+
+    // 3秒后自动关闭
+    setTimeout(hideToast, 3000);
+  }
+
+  // 隐藏提示框
+  function hideToast() {
+    toast.classList.add('translate-x-full');
+  }
+
+  // 关闭提示框按钮
+  closeToast.addEventListener('click', hideToast);
+
+  // 表单提交处理
+  loginForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // 获取表单值
+    var username = usernameInput.value.trim();
+    var password = passwordInput.value.trim();
+
+    // 简单验证
+    if (!username) {
+      showToast('输入错误', '请输入用户名', false);
+      usernameInput.focus();
+      return;
+    }
+    if (!password) {
+      showToast('输入错误', '请输入密码', false);
+      passwordInput.focus();
+      return;
+    }
+
+    // 模拟登录请求
+    loginButton.disabled = true;
+    loginButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> 登录中...';
+    setTimeout(function () {
+      // 模拟登录成功
+      if (username && password) {
+        showToast('登录成功', '正在跳转至系统首页...');
+
+        // 模拟跳转
+        setTimeout(function () {
+          window.location.href = 'javascript:void(0);'; // 实际项目中替换为真实跳转地址
+        }, 1500);
+      } else {
+        showToast('登录失败', '用户名或密码错误', false);
+        loginButton.disabled = false;
+        loginButton.innerHTML = '<span>登录</span><i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>';
+      }
+    }, 1500);
+  });
+});
+  </script> 
+  <!-- [/JSMOD] l7m_登录页面:表单提交处理 -- 实现表单验证、登录状态提示和模拟登录功能 --> 
+  <!-- [JSMOD] n9o_登录页面:数据可视化图表 --> 
+  <script id="charts-script">
+   document.addEventListener('DOMContentLoaded', function () {
+  // 检查是否在大屏幕环境下，只有大屏幕才初始化图表
+  if (window.innerWidth >= 1024) {
+    initCharts();
+
+    // 监听窗口大小变化，重新调整图表
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 1024) {
+        resizeCharts();
+      }
+    });
+  }
+
+  // 初始化所有图表
+  function initCharts() {
+    initGrowthChart();
+    initDistributionChart();
+    initSentimentChart();
+  }
+
+  // 调整所有图表大小
+  function resizeCharts() {
+    if (window.growthChart) window.growthChart.resize();
+    if (window.distributionChart) window.distributionChart.resize();
+    if (window.sentimentChart) window.sentimentChart.resize();
+  }
+
+  // 初始化数据增长趋势图表
+  function initGrowthChart() {
+    var growthChartEl = document.getElementById('growth-chart');
+    if (!growthChartEl) return;
+    window.growthChart = echarts.init(growthChartEl);
+    var option = {
+      grid: {
+        top: '10%',
+        left: '5%',
+        right: '5%',
+        bottom: '15%',
+        containLabel: true
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backdropBlur: 5,
+        textStyle: {
+          color: '#fff'
+        },
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+        borderWidth: 1
+      },
+      xAxis: {
+        type: 'category',
+        data: ['1月', '2月', '3月', '4月', '5月', '6月'],
+        axisLine: {
+          lineStyle: {
+            color: 'rgba(255, 255, 255, 0.3)'
+          }
+        },
+        axisLabel: {
+          color: 'rgba(255, 255, 255, 0.7)'
+        }
+      },
+      yAxis: {
+        type: 'value',
+        axisLine: {
+          show: false
+        },
+        axisLabel: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          formatter: '{value}万'
+        },
+        splitLine: {
+          lineStyle: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        }
+      },
+      series: [{
+        name: '数据量',
+        type: 'bar',
+        data: [120, 190, 150, 230, 290, 320],
+        barWidth: '60%',
+        itemStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0,
+            color: 'rgba(255, 255, 255, 0.8)'
+          }, {
+            offset: 1,
+            color: 'rgba(255, 255, 255, 0.2)'
+          }]),
+          borderRadius: [4, 4, 0, 0]
+        },
+        emphasis: {
+          itemStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: 'rgba(255, 255, 255, 1)'
+            }, {
+              offset: 1,
+              color: 'rgba(255, 255, 255, 0.4)'
+            }])
+          }
+        }
+      }]
+    };
+    window.growthChart.setOption(option);
+  }
+
+  // 初始化数据分布图表
+  function initDistributionChart() {
+    var distributionChartEl = document.getElementById('distribution-chart');
+    if (!distributionChartEl) return;
+    window.distributionChart = echarts.init(distributionChartEl);
+    var option = {
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backdropBlur: 5,
+        textStyle: {
+          color: '#fff'
+        },
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+        borderWidth: 1
+      },
+      legend: {
+        bottom: 0,
+        left: 'center',
+        textStyle: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          fontSize: 12
+        },
+        itemWidth: 10,
+        itemHeight: 10
+      },
+      series: [{
+        name: '数据类型分布',
+        type: 'pie',
+        radius: ['40%', '70%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 4,
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderWidth: 2
+        },
+        label: {
+          show: false,
+          position: 'center'
+        },
+        emphasis: {
+          label: {
+            show: true,
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: '#fff'
+          }
+        },
+        labelLine: {
+          show: false
+        },
+        data: [{
+          value: 35,
+          name: '结构化',
+          itemStyle: {
+            color: 'rgba(255, 255, 255, 0.8)'
+          }
+        }, {
+          value: 25,
+          name: '非结构化',
+          itemStyle: {
+            color: 'rgba(255, 255, 255, 0.6)'
+          }
+        }, {
+          value: 20,
+          name: '半结构化',
+          itemStyle: {
+            color: 'rgba(255, 255, 255, 0.4)'
+          }
+        }, {
+          value: 20,
+          name: '实时流',
+          itemStyle: {
+            color: 'rgba(255, 255, 255, 0.2)'
+          }
+        }]
+      }]
+    };
+    window.distributionChart.setOption(option);
+  }
+
+  // 初始化舆情指数图表
+  function initSentimentChart() {
+    var sentimentChartEl = document.getElementById('sentiment-chart');
+    if (!sentimentChartEl) return;
+    window.sentimentChart = echarts.init(sentimentChartEl);
+    var option = {
+      grid: {
+        top: '10%',
+        left: '5%',
+        right: '5%',
+        bottom: '15%',
+        containLabel: true
+      },
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        backdropBlur: 5,
+        textStyle: {
+          color: '#fff'
+        },
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+        borderWidth: 1
+      },
+      xAxis: {
+        type: 'category',
+        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        axisLine: {
+          lineStyle: {
+            color: 'rgba(255, 255, 255, 0.3)'
+          }
+        },
+        axisLabel: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          fontSize: 10
+        }
+      },
+      yAxis: {
+        type: 'value',
+        min: 0,
+        max: 100,
+        axisLine: {
+          show: false
+        },
+        axisLabel: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          fontSize: 10
+        },
+        splitLine: {
+          lineStyle: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          }
+        }
+      },
+      series: [{
+        name: '舆情指数',
+        type: 'line',
+        data: [65, 59, 80, 81, 56, 55, 72],
+        smooth: true,
+        lineStyle: {
+          width: 3,
+          color: 'rgba(255, 255, 255, 0.8)'
+        },
+        symbol: 'circle',
+        symbolSize: 6,
+        itemStyle: {
+          color: '#fff',
+          borderWidth: 2,
+          borderColor: 'rgba(255, 255, 255, 0.5)'
+        },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0,
+            color: 'rgba(255, 255, 255, 0.3)'
+          }, {
+            offset: 1,
+            color: 'rgba(255, 255, 255, 0)'
+          }])
+        }
+      }]
+    };
+    window.sentimentChart.setOption(option);
+  }
+});
+  </script> 
+  <!-- [/JSMOD] n9o_登录页面:数据可视化图表 -- 实现左侧数据增长趋势、数据分布和舆情指数图表的初始化和交互功能 -->   
+ </body>
+</html>
