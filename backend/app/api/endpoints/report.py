@@ -91,11 +91,11 @@ async def get_reports(
     """
     获取报告列表
     
-    - **industry**: 按行业筛选
-    - **start_date**: 开始日期
+    - **industry**: 按行业筛�?
+    - **start_date**: 开始日�?
     - **end_date**: 结束日期
-    - **keyword**: 搜索关键词
-    - **status**: 报告状态
+    - **keyword**: 搜索关键�?
+    - **status**: 报告状�?
     """
     from app.services.report_service import ReportService
     report_service = ReportService(db)
@@ -116,7 +116,7 @@ async def get_industries(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """获取所有行业分类"""
+    """获取所有行业分�?""
     from app.services.report_service import ReportService
     report_service = ReportService(db)
     return report_service.get_industries()
@@ -133,7 +133,7 @@ async def get_report(
     report_service = ReportService(db)
     report = report_service.get_by_id(report_id)
     if not report:
-        raise HTTPException(status_code=404, detail="报告不存在")
+        raise HTTPException(status_code=404, detail="报告不存�?)
     report_service.increment_view_count(report_id)
     return report
 
@@ -179,7 +179,7 @@ async def update_report(
         status=report_data.status
     )
     if not report:
-        raise HTTPException(status_code=404, detail="报告不存在")
+        raise HTTPException(status_code=404, detail="报告不存�?)
     return report
 
 
@@ -194,7 +194,7 @@ async def delete_report(
     report_service = ReportService(db)
     success = report_service.delete(report_id)
     if not success:
-        raise HTTPException(status_code=404, detail="报告不存在")
+        raise HTTPException(status_code=404, detail="报告不存�?)
     return {"message": "删除成功"}
 
 
@@ -207,14 +207,14 @@ async def download_report(
     """
     下载报告PDF文件
     
-    返回PDF文件流
+    返回PDF文件�?
     """
     import os
     from app.services.report_service import ReportService
     report_service = ReportService(db)
     report = report_service.get_by_id(report_id)
     if not report:
-        raise HTTPException(status_code=404, detail="报告不存在")
+        raise HTTPException(status_code=404, detail="报告不存�?)
     
     # 如果没有PDF文件，先生成
     if not report.pdf_path or not os.path.exists(report.pdf_path):
@@ -286,3 +286,4 @@ async def ai_generate_report(
     )
     
     return report
+

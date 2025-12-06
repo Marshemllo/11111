@@ -38,19 +38,24 @@ request.interceptors.response.use(
     if (response) {
       switch (response.status) {
         case 401:
+          // 登录过期只显示提示，不自动跳转
           ElMessage.error('登录已过期，请重新登录')
-          const userStore = useUserStore()
-          userStore.logoutAction()
-          router.push('/login')
           break
         case 403:
-          ElMessage.error('没有权限访问')
+          // 权限不足只显示提示，不跳转
+          ElMessage.error('权限不足，无法访问该功能')
           break
         case 404:
           ElMessage.error('请求的资源不存在')
           break
+        case 405:
+          ElMessage.error('请求方法不允许')
+          break
         case 500:
           ElMessage.error('服务器错误')
+          break
+        case 501:
+          ElMessage.warning('该功能正在开发中，敬请期待')
           break
         default:
           ElMessage.error(response.data?.detail || '请求失败')

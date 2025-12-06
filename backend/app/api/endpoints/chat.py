@@ -16,7 +16,7 @@ router = APIRouter()
 # ==================== 请求/响应模型 ====================
 
 class ChatRoomCreate(BaseModel):
-    """聊天室创建请求"""
+    """聊天室创建请�?""
     name: str
     room_type: str = "group"  # private, group
     description: Optional[str] = None
@@ -24,14 +24,14 @@ class ChatRoomCreate(BaseModel):
 
 
 class ChatRoomUpdate(BaseModel):
-    """聊天室更新请求"""
+    """聊天室更新请�?""
     name: Optional[str] = None
     description: Optional[str] = None
     avatar: Optional[str] = None
 
 
 class ChatRoomResponse(BaseModel):
-    """聊天室响应"""
+    """聊天室响�?""
     id: int
     name: Optional[str]
     room_type: str
@@ -80,7 +80,7 @@ class AICommandResponse(BaseModel):
 
 # ==================== 聊天室API ====================
 
-@router.get("/rooms", response_model=List[ChatRoomResponse], summary="获取聊天室列表")
+@router.get("/rooms", response_model=List[ChatRoomResponse], summary="获取聊天室列�?)
 async def get_chat_rooms(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
@@ -90,7 +90,7 @@ async def get_chat_rooms(
     pass
 
 
-@router.post("/rooms", response_model=ChatRoomResponse, summary="创建聊天室")
+@router.post("/rooms", response_model=ChatRoomResponse, summary="创建聊天�?)
 async def create_chat_room(
     room_data: ChatRoomCreate,
     current_user: dict = Depends(get_current_active_user),
@@ -101,69 +101,69 @@ async def create_chat_room(
     pass
 
 
-@router.get("/rooms/{room_id}", response_model=ChatRoomResponse, summary="获取聊天室详情")
+@router.get("/rooms/{room_id}", response_model=ChatRoomResponse, summary="获取聊天室详�?)
 async def get_chat_room(
     room_id: int,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """获取指定聊天室详情"""
+    """获取指定聊天室详�?""
     # TODO: 实现获取聊天室详情逻辑
     pass
 
 
-@router.put("/rooms/{room_id}", response_model=ChatRoomResponse, summary="更新聊天室")
+@router.put("/rooms/{room_id}", response_model=ChatRoomResponse, summary="更新聊天�?)
 async def update_chat_room(
     room_id: int,
     room_data: ChatRoomUpdate,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """更新聊天室信息"""
+    """更新聊天室信�?""
     # TODO: 实现更新聊天室逻辑
     pass
 
 
-@router.delete("/rooms/{room_id}", summary="删除聊天室")
+@router.delete("/rooms/{room_id}", summary="删除聊天�?)
 async def delete_chat_room(
     room_id: int,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """删除聊天室"""
+    """删除聊天�?""
     # TODO: 实现删除聊天室逻辑
     pass
 
 
-@router.post("/rooms/{room_id}/join", summary="加入聊天室")
+@router.post("/rooms/{room_id}/join", summary="加入聊天�?)
 async def join_chat_room(
     room_id: int,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """加入聊天室"""
+    """加入聊天�?""
     # TODO: 实现加入聊天室逻辑
     pass
 
 
-@router.post("/rooms/{room_id}/leave", summary="离开聊天室")
+@router.post("/rooms/{room_id}/leave", summary="离开聊天�?)
 async def leave_chat_room(
     room_id: int,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """离开聊天室"""
+    """离开聊天�?""
     # TODO: 实现离开聊天室逻辑
     pass
 
 
-@router.get("/rooms/{room_id}/members", summary="获取聊天室成员")
+@router.get("/rooms/{room_id}/members", summary="获取聊天室成�?)
 async def get_room_members(
     room_id: int,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """获取聊天室成员列表"""
+    """获取聊天室成员列�?""
     # TODO: 实现获取聊天室成员逻辑
     pass
 
@@ -180,21 +180,21 @@ async def get_messages(
     db: Session = Depends(get_db)
 ):
     """
-    获取聊天室消息记录
+    获取聊天室消息记�?
     
-    - **before_id**: 获取此消息ID之前的消息（用于加载更多历史消息）
+    - **before_id**: 获取此消息ID之前的消息（用于加载更多历史消息�?
     """
     # TODO: 实现获取聊天记录逻辑
     pass
 
 
-@router.post("/messages", response_model=MessageResponse, summary="发送消息")
+@router.post("/messages", response_model=MessageResponse, summary="发送消�?)
 async def send_message(
     message_data: MessageCreate,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """发送消息"""
+    """发送消�?""
     # TODO: 实现发送消息逻辑
     pass
 
@@ -234,11 +234,12 @@ async def process_ai_command(
     """
     处理@AI命令
     
-    支持的功能:
-    - 播放音乐: "@AI 播放一首音乐"
+    支持的功�?
+    - 播放音乐: "@AI 播放一首音�?
     - 播放电影: "@AI 播放电影xxx"
-    - 查询天气: "@AI 今天天气怎么样"
-    - 数据报表: "@AI 显示销售数据饼图"
+    - 查询天气: "@AI 今天天气怎么�?
+    - 数据报表: "@AI 显示销售数据饼�?
     """
     # TODO: 实现AI命令处理逻辑
     pass
+

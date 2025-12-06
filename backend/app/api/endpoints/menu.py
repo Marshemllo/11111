@@ -64,15 +64,15 @@ class MenuResponse(BaseModel):
 
 # ==================== API接口 ====================
 
-@router.get("/tree", response_model=List[MenuResponse], summary="获取菜单树")
+@router.get("/tree", response_model=List[MenuResponse], summary="获取菜单�?)
 async def get_menu_tree(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """
-    获取菜单树结构
+    获取菜单树结�?
     
-    返回当前用户有权限访问的菜单树
+    返回当前用户有权限访问的菜单�?
     """
     # TODO: 实现获取菜单树逻辑
     pass
@@ -83,7 +83,7 @@ async def get_menus(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """获取所有菜单列表（扁平结构）"""
+    """获取所有菜单列表（扁平结构�?""
     # TODO: 实现获取菜单列表逻辑
     pass
 
@@ -117,7 +117,7 @@ async def update_menu(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """更新指定菜单（管理员权限）"""
+    """更新指定菜单（管理员权限�?""
     # TODO: 实现更新菜单逻辑
     pass
 
@@ -128,7 +128,7 @@ async def delete_menu(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """删除指定菜单（管理员权限）"""
+    """删除指定菜单（管理员权限�?""
     # TODO: 实现删除菜单逻辑
     pass
 
@@ -143,3 +143,4 @@ async def update_menu_order(
     """调整菜单排序"""
     # TODO: 实现调整菜单排序逻辑
     pass
+

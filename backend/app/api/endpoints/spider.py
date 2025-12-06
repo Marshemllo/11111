@@ -16,7 +16,7 @@ router = APIRouter()
 # ==================== 请求/响应模型 ====================
 
 class DataSourceCreate(BaseModel):
-    """数据源创建请求"""
+    """数据源创建请�?""
     name: str
     url: str
     source_type: str
@@ -26,7 +26,7 @@ class DataSourceCreate(BaseModel):
 
 
 class DataSourceUpdate(BaseModel):
-    """数据源更新请求"""
+    """数据源更新请�?""
     name: Optional[str] = None
     url: Optional[str] = None
     source_type: Optional[str] = None
@@ -37,7 +37,7 @@ class DataSourceUpdate(BaseModel):
 
 
 class DataSourceResponse(BaseModel):
-    """数据源响应"""
+    """数据源响�?""
     id: int
     name: str
     url: str
@@ -104,7 +104,7 @@ class SpiderTestResponse(BaseModel):
 
 # ==================== 数据源API ====================
 
-@router.get("/sources", response_model=List[DataSourceResponse], summary="获取数据源列表")
+@router.get("/sources", response_model=List[DataSourceResponse], summary="获取数据源列�?)
 async def get_data_sources(
     skip: int = 0,
     limit: int = 20,
@@ -113,15 +113,15 @@ async def get_data_sources(
     db: Session = Depends(get_db)
 ):
     """
-    获取数据源列表
+    获取数据源列�?
     
-    - **industry_tag**: 按行业标签筛选
+    - **industry_tag**: 按行业标签筛�?
     """
     # TODO: 实现获取数据源列表逻辑
-    pass
+    raise HTTPException(status_code=501, detail="功能开发中")
 
 
-@router.post("/sources", response_model=DataSourceResponse, summary="创建数据源")
+@router.post("/sources", response_model=DataSourceResponse, summary="创建数据�?)
 async def create_data_source(
     source_data: DataSourceCreate,
     current_user: dict = Depends(get_current_active_user),
@@ -132,36 +132,36 @@ async def create_data_source(
     pass
 
 
-@router.get("/sources/{source_id}", response_model=DataSourceResponse, summary="获取数据源详情")
+@router.get("/sources/{source_id}", response_model=DataSourceResponse, summary="获取数据源详�?)
 async def get_data_source(
     source_id: int,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """获取指定数据源详情"""
+    """获取指定数据源详�?""
     # TODO: 实现获取数据源详情逻辑
     pass
 
 
-@router.put("/sources/{source_id}", response_model=DataSourceResponse, summary="更新数据源")
+@router.put("/sources/{source_id}", response_model=DataSourceResponse, summary="更新数据�?)
 async def update_data_source(
     source_id: int,
     source_data: DataSourceUpdate,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """更新指定数据源"""
+    """更新指定数据�?""
     # TODO: 实现更新数据源逻辑
     pass
 
 
-@router.delete("/sources/{source_id}", summary="删除数据源")
+@router.delete("/sources/{source_id}", summary="删除数据�?)
 async def delete_data_source(
     source_id: int,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """删除指定数据源"""
+    """删除指定数据�?""
     # TODO: 实现删除数据源逻辑
     pass
 
@@ -180,8 +180,8 @@ async def get_spider_rules(
     """
     获取爬虫规则列表
     
-    - **data_source_id**: 按数据源筛选
-    - **status**: 按状态筛选
+    - **data_source_id**: 按数据源筛�?
+    - **status**: 按状态筛�?
     """
     # TODO: 实现获取爬虫规则列表逻辑
     pass
@@ -193,7 +193,7 @@ async def create_spider_rule(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """创建新爬虫规则"""
+    """创建新爬虫规�?""
     # TODO: 实现创建爬虫规则逻辑
     pass
 
@@ -277,6 +277,7 @@ async def get_industry_tags(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """获取所有行业标签"""
+    """获取所有行业标�?""
     # TODO: 实现获取行业标签列表逻辑
     pass
+

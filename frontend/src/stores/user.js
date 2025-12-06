@@ -45,7 +45,7 @@ export const useUserStore = defineStore('user', () => {
   }
   
   // 登出
-  async function logoutAction() {
+  async function logoutAction(redirect = true) {
     try {
       await logout()
     } catch (error) {
@@ -56,8 +56,18 @@ export const useUserStore = defineStore('user', () => {
       userInfo.value = null
       menus.value = []
       localStorage.removeItem('token')
-      router.push('/login')
+      if (redirect) {
+        router.push('/login')
+      }
     }
+  }
+  
+  // 清除状态（不跳转）
+  function clearState() {
+    token.value = ''
+    userInfo.value = null
+    menus.value = []
+    localStorage.removeItem('token')
   }
   
   // 设置菜单
@@ -76,6 +86,7 @@ export const useUserStore = defineStore('user', () => {
     loginAction,
     fetchUserInfo,
     logoutAction,
-    setMenus
+    setMenus,
+    clearState
   }
 })

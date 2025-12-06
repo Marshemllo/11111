@@ -68,7 +68,7 @@ class LoginRequest(BaseModel):
 
 # ==================== API接口 ====================
 
-@router.post("/create", response_model=UserResponse, summary="创建用户（超级管理员）")
+@router.post("/create", response_model=UserResponse, summary="创建用户（超级管理员�?)
 async def create_user(
     user_data: UserCreate,
     current_user: dict = Depends(get_current_active_user),
@@ -77,12 +77,12 @@ async def create_user(
     """
     创建用户接口（仅超级管理员可用）
     
-    用户角色等级：
-    - **user**: 普通用户
-    - **admin**: 管理员
-    - **superadmin**: 超级管理员
+    用户角色等级�?
+    - **user**: 普通用�?
+    - **admin**: 管理�?
+    - **superadmin**: 超级管理�?
     """
-    # 检查是否为超级管理员
+    # 检查是否为超级管理�?
     user_id = current_user.get("sub")
     operator = db.query(User).filter(User.id == int(user_id)).first()
     
@@ -92,7 +92,7 @@ async def create_user(
             detail="仅超级管理员可以创建用户"
         )
     
-    # 检查用户名是否已存在
+    # 检查用户名是否已存�?
     existing_user = db.query(User).filter(User.username == user_data.username).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="用户名已存在")
@@ -102,11 +102,11 @@ async def create_user(
     if existing_email:
         raise HTTPException(status_code=400, detail="邮箱已被注册")
     
-    # 验证角色值
+    # 验证角色�?
     valid_roles = ["user", "admin", "superadmin"]
     role = user_data.role if hasattr(user_data, 'role') and user_data.role in valid_roles else "user"
     
-    # 创建新用户
+    # 创建新用�?
     user = User(
         username=user_data.username,
         email=user_data.email,
@@ -149,7 +149,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # 检查用户是否激活
+    # 检查用户是否激�?
     if not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -157,7 +157,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # 更新最后登录时间
+    # 更新最后登录时�?
     user.last_login = datetime.now()
     db.commit()
     
@@ -182,7 +182,7 @@ async def get_current_user_info(
     user_id = current_user.get("sub")
     user = db.query(User).filter(User.id == int(user_id)).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        raise HTTPException(status_code=404, detail="用户不存�?)
     return user
 
 
@@ -197,6 +197,17 @@ async def update_current_user(
     pass
 
 
+@router.post("/logout", summary="用户登出")
+async def logout(current_user: dict = Depends(get_current_active_user)):
+    """
+    用户登出接口
+    
+    JWT是无状态的，登出只需要前端清除token即可
+    这个接口主要用于记录登出日志等操�?
+    """
+    return {"message": "登出成功"}
+
+
 @router.get("/", response_model=List[UserResponse], summary="获取用户列表")
 async def get_users(
     skip: int = 0,
@@ -206,18 +217,18 @@ async def get_users(
     db: Session = Depends(get_db)
 ):
     """
-    获取用户列表（管理员和超级管理员可用）
+    获取用户列表（管理员和超级管理员可用�?
     
-    - **skip**: 跳过记录数
-    - **limit**: 返回记录数
-    - **keyword**: 搜索关键词
+    - **skip**: 跳过记录�?
+    - **limit**: 返回记录�?
+    - **keyword**: 搜索关键�?
     
-    权限说明：
+    权限说明�?
     - 普通用户：无权访问
-    - 管理员：可查看列表
-    - 超级管理员：可查看列表
+    - 管理员：可查看列�?
+    - 超级管理员：可查看列�?
     """
-    # 检查权限：只有管理员和超级管理员可以查看用户列表
+    # 检查权限：只有管理员和超级管理员可以查看用户列�?
     user_id = current_user.get("sub")
     operator = db.query(User).filter(User.id == int(user_id)).first()
     
@@ -230,7 +241,7 @@ async def get_users(
     # 构建查询
     query = db.query(User)
     
-    # 关键词搜索
+    # 关键词搜�?
     if keyword:
         query = query.filter(
             (User.username.contains(keyword)) | 
@@ -250,9 +261,9 @@ async def get_user(
     db: Session = Depends(get_db)
 ):
     """
-    获取指定用户详情（管理员和超级管理员可用）
+    获取指定用户详情（管理员和超级管理员可用�?
     """
-    # 检查权限
+    # 检查权�?
     operator_id = current_user.get("sub")
     operator = db.query(User).filter(User.id == int(operator_id)).first()
     
@@ -264,7 +275,7 @@ async def get_user(
     
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        raise HTTPException(status_code=404, detail="用户不存�?)
     return user
 
 
@@ -278,12 +289,12 @@ async def update_user(
     """
     更新指定用户信息（仅超级管理员可用）
     
-    权限说明：
+    权限说明�?
     - 普通用户：无权操作
     - 管理员：无权操作
-    - 超级管理员：可更新用户信息
+    - 超级管理员：可更新用户信�?
     """
-    # 检查权限：只有超级管理员可以更新用户
+    # 检查权限：只有超级管理员可以更新用�?
     operator_id = current_user.get("sub")
     operator = db.query(User).filter(User.id == int(operator_id)).first()
     
@@ -295,7 +306,7 @@ async def update_user(
     
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        raise HTTPException(status_code=404, detail="用户不存�?)
     
     # 更新用户信息
     if user_data.nickname is not None:
@@ -321,12 +332,12 @@ async def delete_user(
     """
     删除指定用户（仅超级管理员可用）
     
-    权限说明：
+    权限说明�?
     - 普通用户：无权操作
     - 管理员：无权操作
-    - 超级管理员：可删除用户
+    - 超级管理员：可删除用�?
     """
-    # 检查权限：只有超级管理员可以删除用户
+    # 检查权限：只有超级管理员可以删除用�?
     operator_id = current_user.get("sub")
     operator = db.query(User).filter(User.id == int(operator_id)).first()
     
@@ -342,14 +353,14 @@ async def delete_user(
     
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        raise HTTPException(status_code=404, detail="用户不存�?)
     
     db.delete(user)
     db.commit()
     return {"message": "删除成功"}
 
 
-@router.post("/{user_id}/toggle-status", summary="切换用户状态")
+@router.post("/{user_id}/toggle-status", summary="切换用户状�?)
 async def toggle_user_status(
     user_id: int,
     current_user: dict = Depends(get_current_active_user),
@@ -358,12 +369,12 @@ async def toggle_user_status(
     """
     启用/禁用用户（仅超级管理员可用）
     
-    权限说明：
+    权限说明�?
     - 普通用户：无权操作
     - 管理员：无权操作
-    - 超级管理员：可切换用户状态
+    - 超级管理员：可切换用户状�?
     """
-    # 检查权限：只有超级管理员可以切换用户状态
+    # 检查权限：只有超级管理员可以切换用户状�?
     operator_id = current_user.get("sub")
     operator = db.query(User).filter(User.id == int(operator_id)).first()
     
@@ -379,9 +390,10 @@ async def toggle_user_status(
     
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存在")
+        raise HTTPException(status_code=404, detail="用户不存�?)
     
     user.is_active = not user.is_active
     db.commit()
     db.refresh(user)
     return {"message": "操作成功", "is_active": user.is_active}
+
