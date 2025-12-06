@@ -35,10 +35,15 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24小时
     
     # AI配置 (支持多种AI服务)
-    AI_PROVIDER: str = "openai"  # openai, azure, local
+    AI_PROVIDER: str = "siliconflow"  # openai, azure, siliconflow, local
     OPENAI_API_KEY: Optional[str] = None
     OPENAI_BASE_URL: Optional[str] = None
     OPENAI_MODEL: str = "gpt-3.5-turbo"
+    
+    # SiliconFlow AI配置 (成小理)
+    SILICONFLOW_API_KEY: Optional[str] = None
+    SILICONFLOW_BASE_URL: str = "https://api.siliconflow.cn/v1"
+    SILICONFLOW_MODEL: str = "deepseek-ai/DeepSeek-R1-0528-Qwen3-8B"
     
     # Redis配置 (用于WebSocket会话管理)
     REDIS_HOST: str = "localhost"

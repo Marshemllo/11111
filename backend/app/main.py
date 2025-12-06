@@ -85,12 +85,43 @@ async def websocket_chat(websocket: WebSocket, user_id: int):
             elif message_type == "chat_message":
                 room_id = data.get("room_id")
                 content = data.get("content")
+                username = data.get("username", f"User_{user_id}")
                 
-                # 检查是否是AI命令
-                if content.startswith("@AI") or content.startswith("@ai"):
+                # 先广播用户消息
+                await manager.broadcast_to_room(
+                    {
+                        "type": "chat_message",
+                        "user_id": user_id,
+                        "username": username,
+                        "content": content
+                    },
+                    room_id
+                )
+                
+                # 检查是否是成小理命令
+                from app.services.ai_service import AIService
+                ai_service = AIService()
+                
+                if ai_service.is_chengli_command(content):
+                    # 处理成小理命令
+                    query = ai_service.extract_chengli_query(content)
+                    reply = await ai_service.chengli_reply(query)
+                    
+                    # 发送成小理回复
+                    await manager.broadcast_to_room(
+                        {
+                            "type": "chat_message",
+                            "user_id": 0,
+                            "username": "成小理",
+                            "content": reply,
+                            "is_ai": True
+                        },
+                        room_id
+                    )
+                
+                # 检查是否是@AI命令
+                elif content.startswith("@AI") or content.startswith("@ai"):
                     # 处理AI命令
-                    from app.services.ai_service import AIService
-                    ai_service = AIService()
                     command = ai_service.parse_ai_command(content[3:].strip())
                     result = await ai_service.execute_command(command)
                     
@@ -101,16 +132,6 @@ async def websocket_chat(websocket: WebSocket, user_id: int):
                             "content": result["response_text"],
                             "action": result["action"],
                             "data": result.get("data")
-                        },
-                        room_id
-                    )
-                else:
-                    # 普通消息广播
-                    await manager.broadcast_to_room(
-                        {
-                            "type": "chat_message",
-                            "user_id": user_id,
-                            "content": content
                         },
                         room_id
                     )

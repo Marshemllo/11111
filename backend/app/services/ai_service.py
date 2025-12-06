@@ -6,6 +6,7 @@ from typing import Optional, Dict, Any, List
 import json
 import re
 from enum import Enum
+import httpx
 
 from app.core.config import settings
 
@@ -32,9 +33,16 @@ class AIService:
         AICommandType.REPORT: ["报告", "分析报告", "生成报告"],
     }
     
+    # 成小理 AI 助手触发词
+    CHENGLI_TRIGGERS = ["@成小理", "@chengli", "@成理"]
+    
     def __init__(self):
         self.api_key = settings.OPENAI_API_KEY
         self.model = settings.OPENAI_MODEL
+        # SiliconFlow 配置
+        self.siliconflow_api_key = settings.SILICONFLOW_API_KEY
+        self.siliconflow_base_url = settings.SILICONFLOW_BASE_URL
+        self.siliconflow_model = settings.SILICONFLOW_MODEL
     
     def parse_ai_command(self, message: str) -> Dict[str, Any]:
         """
@@ -96,28 +104,34 @@ class AIService:
     def _extract_music_query(self, message: str) -> Optional[str]:
         """提取音乐查询"""
         # 简单实现，后续可接入AI进行更精确的提取
-        patterns = [
-            r"播放[《"]?(.+?)[》"]?的?歌",
-            r"来首(.+?)的歌",
-            r"听(.+?)的歌",
-        ]
-        for pattern in patterns:
-            match = re.search(pattern, message)
-            if match:
-                return match.group(1)
+        # 尝试提取《》中的内容
+        if "《" in message and "》" in message:
+            start = message.find("《") + 1
+            end = message.find("》")
+            if start < end:
+                return message[start:end]
+        # 尝试提取"播放"后的内容
+        if "播放" in message:
+            idx = message.find("播放") + 2
+            rest = message[idx:].strip()
+            if rest:
+                return rest.split()[0] if rest.split() else rest
         return None
     
     def _extract_movie_query(self, message: str) -> Optional[str]:
         """提取电影查询"""
-        patterns = [
-            r"播放[《"]?(.+?)[》"]?电影",
-            r"看[《"]?(.+?)[》"]?",
-            r"电影[《"]?(.+?)[》"]?",
-        ]
-        for pattern in patterns:
-            match = re.search(pattern, message)
-            if match:
-                return match.group(1)
+        # 尝试提取《》中的内容
+        if "《" in message and "》" in message:
+            start = message.find("《") + 1
+            end = message.find("》")
+            if start < end:
+                return message[start:end]
+        # 尝试提取"电影"后的内容
+        if "电影" in message:
+            idx = message.find("电影") + 2
+            rest = message[idx:].strip()
+            if rest:
+                return rest.split()[0] if rest.split() else rest
         return None
     
     def _extract_city(self, message: str) -> str:
@@ -248,14 +262,100 @@ class AIService:
         }
     
     async def _handle_unknown(self, message: str) -> Dict[str, Any]:
-        """处理未知命令"""
-        # TODO: 接入AI进行智能回复
+        """处理未知命令 - 使用成小理进行智能回复"""
+        # 尝试使用成小理进行智能回复
+        reply = await self.chengli_reply(message)
         return {
             "success": True,
-            "response_text": f"抱歉，我暂时无法理解您的请求: {message}。您可以尝试让我播放音乐、查询天气或展示数据图表。",
+            "response_text": reply,
             "action": "chat",
             "data": {}
         }
+    
+    def is_chengli_command(self, message: str) -> bool:
+        """
+        检查消息是否是@成小理命令
+        
+        Args:
+            message: 用户消息
+        
+        Returns:
+            是否是成小理命令
+        """
+        message_lower = message.lower().strip()
+        for trigger in self.CHENGLI_TRIGGERS:
+            if message_lower.startswith(trigger.lower()):
+                return True
+        return False
+    
+    def extract_chengli_query(self, message: str) -> str:
+        """
+        提取成小理命令中的查询内容
+        
+        Args:
+            message: 用户消息
+        
+        Returns:
+            查询内容
+        """
+        message_stripped = message.strip()
+        for trigger in self.CHENGLI_TRIGGERS:
+            if message_stripped.lower().startswith(trigger.lower()):
+                return message_stripped[len(trigger):].strip()
+        return message_stripped
+    
+    async def chengli_reply(self, prompt: str) -> str:
+        """
+        成小理 AI 助手回复
+        
+        使用 SiliconFlow API 进行智能对话
+        
+        Args:
+            prompt: 用户问题
+        
+        Returns:
+            AI 回复内容
+        """
+        if not self.siliconflow_api_key:
+            return "成小理未配置，请设置环境变量 SILICONFLOW_API_KEY"
+        
+        try:
+            payload = {
+                "model": self.siliconflow_model,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "你是成小理，一个友好、专业的AI助手。用简洁的中文回答用户问题，语气亲切自然。"
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt or "请用简洁中文回答"
+                    }
+                ]
+            }
+            
+            headers = {
+                "Authorization": f"Bearer {self.siliconflow_api_key}",
+                "Content-Type": "application/json"
+            }
+            
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                response = await client.post(
+                    f"{self.siliconflow_base_url}/chat/completions",
+                    json=payload,
+                    headers=headers
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    return data.get("choices", [{}])[0].get("message", {}).get("content", "成小理没有返回可用内容")
+                else:
+                    return f"成小理服务异常 (HTTP {response.status_code})"
+                    
+        except httpx.TimeoutException:
+            return "成小理响应超时，请稍后重试"
+        except Exception as e:
+            return f"成小理服务异常: {str(e)}"
     
     async def generate_report_content(
         self,

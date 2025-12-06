@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OODaiP Chat Room</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>OODaiP</h3>
+            </div>
+            <div class="user-list">
+                <p>Online Users</p>
+                <!-- User list could be populated dynamically -->
+                <div id="user-list-content">
+                    <!-- Placeholder -->
+                </div>
+            </div>
+            <div style="padding: 1rem;">
+                <a href="/" style="color: #bbb; text-decoration: none;">Logout</a>
+            </div>
+        </div>
+
+        <!-- Main Chat -->
+        <div class="main-chat">
+            <div class="chat-header">
+                <span id="current-room">General Room</span>
+                <span id="current-user">User: {{ nickname }}</span>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will appear here -->
+                <div class="system-message">Welcome to the chat room!</div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="toolbar">
+                    <!-- Stubs for mentions -->
+                    <button class="tool-btn" onclick="insertText('@成小理 ')">@成小理</button>
+                    <button class="tool-btn" onclick="insertText('@音乐一下 ')">@Music</button>
+                    <button class="tool-btn" onclick="insertText('@电影 ')">@Movie</button>
+                    <button class="tool-btn" onclick="insertText('@天气 ')">@Weather</button>
+                    <!-- Emoji Stub -->
+                    <button class="tool-btn" onclick="insertEmoji('😀')">😀</button>
+                    <button class="tool-btn" onclick="insertEmoji('😂')">😂</button>
+                    <!-- History Stub -->
+                    <button class="tool-btn" onclick="showHistory()">📜 History</button>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="msg-input" class="chat-input" placeholder="Type a message..." autocomplete="off">
+                    <button id="send-btn" class="send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = "{{ nickname }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>

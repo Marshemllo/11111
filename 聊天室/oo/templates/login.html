@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OODaiP Chat Room - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- jQuery assumption as per requirement -->
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>OODaiP Login</h2>
+            {% if error %}
+                <div class="error-msg">{{ error }}</div>
+            {% endif %}
+            <form action="/" method="POST">
+                <div class="form-group">
+                    <label for="nickname">Nickname</label>
+                    <input type="text" id="nickname" name="nickname" class="form-control" placeholder="Enter your nickname" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Fixed: 123456" required>
+                </div>
+                <div class="form-group">
+                    <label for="server">Server</label>
+                    <select id="server" name="server_url" class="form-control">
+                        {% for server in servers %}
+                            <option value="{{ server.url }}">{{ server.name }} ({{ server.url }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Fallback if jQuery isn't loaded yet (though required by user)
+        window.onload = function() {
+            if (typeof jQuery === 'undefined') {
+                console.warn('jQuery is missing. Please ensure jquery-3.7.1.min.js is in static/js/');
+            }
+        };
+    </script>
+</body>
+</html>
