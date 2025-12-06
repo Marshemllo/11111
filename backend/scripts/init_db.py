@@ -59,32 +59,69 @@ def insert_default_admin():
 
 
 def insert_default_ai_engines():
-    """插入默认AI引擎配置"""
+    """插入默认AI引擎配置 - 硅基流动免费模型"""
     db = SessionLocal()
     try:
+        # 硅基流动免费模型
         engines = [
             {
-                "name": "成小理 (SiliconFlow)",
+                "name": "DeepSeek-R1-0528-Qwen3-8B",
                 "provider": "siliconflow",
+                "api_key": "sk-vubzfajwqoaynjfkrkopjxbfbxdgzexlgujewuauvhavcqfl",
                 "api_base_url": "https://api.siliconflow.cn/v1",
                 "model_name": "deepseek-ai/DeepSeek-R1-0528-Qwen3-8B",
-                "description": "基于SiliconFlow的智能助手",
+                "description": "DeepSeek R1 推理模型 (免费)",
+                "max_tokens": 4096,
                 "is_default": True
             },
             {
-                "name": "OpenAI GPT-3.5",
-                "provider": "openai",
-                "api_base_url": "https://api.openai.com/v1",
-                "model_name": "gpt-3.5-turbo",
-                "description": "OpenAI GPT-3.5模型",
+                "name": "Qwen2.5-7B-Instruct",
+                "provider": "siliconflow",
+                "api_key": "sk-vubzfajwqoaynjfkrkopjxbfbxdgzexlgujewuauvhavcqfl",
+                "api_base_url": "https://api.siliconflow.cn/v1",
+                "model_name": "Qwen/Qwen2.5-7B-Instruct",
+                "description": "通义千问2.5 7B指令模型 (免费)",
+                "max_tokens": 4096,
                 "is_default": False
             },
             {
-                "name": "OpenAI GPT-4",
-                "provider": "openai",
-                "api_base_url": "https://api.openai.com/v1",
-                "model_name": "gpt-4",
-                "description": "OpenAI GPT-4模型",
+                "name": "GLM-4-9B-Chat",
+                "provider": "siliconflow",
+                "api_key": "sk-vubzfajwqoaynjfkrkopjxbfbxdgzexlgujewuauvhavcqfl",
+                "api_base_url": "https://api.siliconflow.cn/v1",
+                "model_name": "THUDM/glm-4-9b-chat",
+                "description": "智谱GLM-4 9B对话模型 (免费)",
+                "max_tokens": 4096,
+                "is_default": False
+            },
+            {
+                "name": "Qwen2.5-Coder-7B-Instruct",
+                "provider": "siliconflow",
+                "api_key": "sk-vubzfajwqoaynjfkrkopjxbfbxdgzexlgujewuauvhavcqfl",
+                "api_base_url": "https://api.siliconflow.cn/v1",
+                "model_name": "Qwen/Qwen2.5-Coder-7B-Instruct",
+                "description": "通义千问2.5代码模型 (免费)",
+                "max_tokens": 4096,
+                "is_default": False
+            },
+            {
+                "name": "InternLM2.5-7B-Chat",
+                "provider": "siliconflow",
+                "api_key": "sk-vubzfajwqoaynjfkrkopjxbfbxdgzexlgujewuauvhavcqfl",
+                "api_base_url": "https://api.siliconflow.cn/v1",
+                "model_name": "internlm/internlm2_5-7b-chat",
+                "description": "书生浦语2.5 7B对话模型 (免费)",
+                "max_tokens": 4096,
+                "is_default": False
+            },
+            {
+                "name": "Yi-1.5-6B-Chat",
+                "provider": "siliconflow",
+                "api_key": "sk-vubzfajwqoaynjfkrkopjxbfbxdgzexlgujewuauvhavcqfl",
+                "api_base_url": "https://api.siliconflow.cn/v1",
+                "model_name": "01-ai/Yi-1.5-6B-Chat",
+                "description": "零一万物Yi 1.5 6B对话模型 (免费)",
+                "max_tokens": 4096,
                 "is_default": False
             }
         ]
