@@ -12,12 +12,6 @@ const routes = [
     meta: { title: '登录', requiresAuth: false }
   },
   {
-    path: '/register',
-    name: 'Register',
-    component: () => import('@/views/login/register.vue'),
-    meta: { title: '注册', requiresAuth: false }
-  },
-  {
     path: '/',
     name: 'Layout',
     component: () => import('@/layout/index.vue'),
@@ -46,6 +40,12 @@ const routes = [
         name: 'Spiders',
         component: () => import('@/views/spiders/index.vue'),
         meta: { title: '爬虫管理', icon: 'Connection' }
+      },
+      {
+        path: 'ai-engines',
+        name: 'AIEngines',
+        component: () => import('@/views/ai-engines/index.vue'),
+        meta: { title: 'AI引擎管理', icon: 'Cpu' }
       },
       {
         path: 'reports',

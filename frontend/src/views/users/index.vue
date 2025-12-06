@@ -1,57 +1,69 @@
 <template>
   <div class="page-container">
-    <!-- 搜索区域 -->
-    <div class="search-form">
-      <el-form :inline="true" :model="searchForm">
-        <el-form-item label="关键词">
-          <el-input v-model="searchForm.keyword" placeholder="用户名/邮箱" clearable />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="handleReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <!-- 权限不足提示 -->
+    <el-alert
+      v-if="!canViewUsers"
+      title="权限不足"
+      type="warning"
+      description="您没有权限查看用户列表，请联系管理员。"
+      show-icon
+      :closable="false"
+    />
     
-    <!-- 操作按钮 -->
-    <div class="table-actions mb-20">
-      <el-button type="primary" @click="handleAdd">
-        <el-icon><Plus /></el-icon>
-        新增用户
-      </el-button>
-    </div>
-    
-    <!-- 用户表格 -->
-    <el-table :data="userList" v-loading="loading" border>
-      <el-table-column prop="id" label="ID" width="80" />
-      <el-table-column prop="username" label="用户名" />
-      <el-table-column prop="email" label="邮箱" />
-      <el-table-column prop="nickname" label="昵称" />
-      <el-table-column prop="role" label="角色" width="100">
-        <template #default="{ row }">
-          <el-tag :type="row.role === 'admin' ? 'danger' : 'info'">
-            {{ row.role === 'admin' ? '管理员' : '普通用户' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_active" label="状态" width="100">
-        <template #default="{ row }">
-          <el-tag :type="row.is_active ? 'success' : 'danger'">
-            {{ row.is_active ? '启用' : '禁用' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="created_at" label="创建时间" width="180" />
-      <el-table-column label="操作" width="200" fixed="right">
-        <template #default="{ row }">
-          <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
-          <el-button type="warning" link @click="handleToggleStatus(row)">
-            {{ row.is_active ? '禁用' : '启用' }}
-          </el-button>
-          <el-button type="danger" link @click="handleDelete(row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <template v-else>
+      <!-- 搜索区域 -->
+      <div class="search-form">
+        <el-form :inline="true" :model="searchForm">
+          <el-form-item label="关键词">
+            <el-input v-model="searchForm.keyword" placeholder="用户名/邮箱" clearable />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleSearch">搜索</el-button>
+            <el-button @click="handleReset">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      
+      <!-- 操作按钮 - 仅超级管理员可见 -->
+      <div class="table-actions mb-20" v-if="isSuperAdmin">
+        <el-button type="primary" @click="handleAdd">
+          <el-icon><Plus /></el-icon>
+          新增用户
+        </el-button>
+      </div>
+      
+      <!-- 用户表格 -->
+      <el-table :data="userList" v-loading="loading" border>
+        <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="username" label="用户名" />
+        <el-table-column prop="email" label="邮箱" />
+        <el-table-column prop="nickname" label="昵称" />
+        <el-table-column prop="role" label="角色" width="120">
+          <template #default="{ row }">
+            <el-tag :type="getRoleTagType(row.role)">
+              {{ getRoleLabel(row.role) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="is_active" label="状态" width="100">
+          <template #default="{ row }">
+            <el-tag :type="row.is_active ? 'success' : 'danger'">
+              {{ row.is_active ? '启用' : '禁用' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="created_at" label="创建时间" width="180" />
+        <!-- 操作列 - 仅超级管理员可见 -->
+        <el-table-column v-if="isSuperAdmin" label="操作" width="200" fixed="right">
+          <template #default="{ row }">
+            <el-button type="primary" link @click="handleEdit(row)">编辑</el-button>
+            <el-button type="warning" link @click="handleToggleStatus(row)">
+              {{ row.is_active ? '禁用' : '启用' }}
+            </el-button>
+            <el-button type="danger" link @click="handleDelete(row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     
     <!-- 分页 -->
     <div class="mt-20 flex-center">
@@ -93,25 +105,61 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="formData.phone" />
         </el-form-item>
+        <el-form-item v-if="!isEdit" label="角色" prop="role">
+          <el-select v-model="formData.role" placeholder="请选择角色">
+            <el-option label="普通用户" value="user" />
+            <el-option label="管理员" value="admin" />
+            <el-option label="超级管理员" value="superadmin" />
+          </el-select>
+        </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="handleSubmit">确定</el-button>
       </template>
     </el-dialog>
+    </template>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { getUserList, createUser, updateUser, deleteUser, toggleUserStatus } from '@/api/user'
+import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
+
+const userStore = useUserStore()
 
 const loading = ref(false)
 const userList = ref([])
 const dialogVisible = ref(false)
 const isEdit = ref(false)
 const formRef = ref(null)
+
+// 权限计算属性
+const currentUserRole = computed(() => userStore.userInfo?.role || 'user')
+const canViewUsers = computed(() => ['admin', 'superadmin'].includes(currentUserRole.value))
+const isSuperAdmin = computed(() => currentUserRole.value === 'superadmin')
+
+// 角色标签类型
+const getRoleTagType = (role) => {
+  const types = {
+    'superadmin': 'danger',
+    'admin': 'warning',
+    'user': 'info'
+  }
+  return types[role] || 'info'
+}
+
+// 角色标签文字
+const getRoleLabel = (role) => {
+  const labels = {
+    'superadmin': '超级管理员',
+    'admin': '管理员',
+    'user': '普通用户'
+  }
+  return labels[role] || '普通用户'
+}
 
 const searchForm = reactive({
   keyword: ''
@@ -129,7 +177,8 @@ const formData = reactive({
   email: '',
   password: '',
   nickname: '',
-  phone: ''
+  phone: '',
+  role: 'user'
 })
 
 const formRules = {
@@ -182,7 +231,8 @@ const handleAdd = () => {
     email: '',
     password: '',
     nickname: '',
-    phone: ''
+    phone: '',
+    role: 'user'
   })
   dialogVisible.value = true
 }
@@ -247,6 +297,14 @@ const handleDelete = async (row) => {
   }
 }
 
-// 初始化
-loadData()
+// 初始化 - 只有有权限的用户才加载数据
+onMounted(async () => {
+  // 确保用户信息已加载
+  if (!userStore.userInfo) {
+    await userStore.fetchUserInfo()
+  }
+  if (canViewUsers.value) {
+    loadData()
+  }
+})
 </script>

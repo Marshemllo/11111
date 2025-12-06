@@ -14,13 +14,6 @@ export function login(data) {
 }
 
 /**
- * 用户注册
- */
-export function register(data) {
-  return request.post('/users/register', data)
-}
-
-/**
  * 获取当前用户信息
  */
 export function getUserInfo() {
@@ -56,10 +49,10 @@ export function getUserDetail(id) {
 }
 
 /**
- * 创建用户
+ * 创建用户（超级管理员）
  */
 export function createUser(data) {
-  return request.post('/users/register', data)
+  return request.post('/users/create', data)
 }
 
 /**
