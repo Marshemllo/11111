@@ -18,20 +18,16 @@ from app.core.security import (
 router = APIRouter()
 
 
-# ==================== 请求/响应模型 ====================
-
 class UserCreate(BaseModel):
-    """用户创建请求"""
     username: str
     email: EmailStr
     password: str
     nickname: Optional[str] = None
     phone: Optional[str] = None
-    role: Optional[str] = "user"  # user, admin, superadmin
+    role: Optional[str] = "user"
 
 
 class UserUpdate(BaseModel):
-    """用户更新请求"""
     nickname: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
@@ -39,137 +35,44 @@ class UserUpdate(BaseModel):
 
 
 class UserResponse(BaseModel):
-    """用户响应"""
     id: int
     username: str
     email: str
-    nickname: Optional[str]
-    avatar: Optional[str]
-    phone: Optional[str]
+    nickname: Optional[str] = None
+    avatar: Optional[str] = None
+    phone: Optional[str] = None
     role: str
     is_active: bool
+    is_superuser: bool
+    last_login: Optional[datetime] = None
     created_at: datetime
-    
+    updated_at: datetime
+
     class Config:
         from_attributes = True
 
 
 class Token(BaseModel):
-    """令牌响应"""
     access_token: str
-    token_type: str = "bearer"
-
-
-class LoginRequest(BaseModel):
-    """登录请求"""
-    username: str
-    password: str
-
-
-# ==================== API接口 ====================
-
-@router.post("/create", response_model=UserResponse, summary="创建用户（超级管理员�?)
-async def create_user(
-    user_data: UserCreate,
-    current_user: dict = Depends(get_current_active_user),
-    db: Session = Depends(get_db)
-):
-    """
-    创建用户接口（仅超级管理员可用）
-    
-    用户角色等级�?
-    - **user**: 普通用�?
-    - **admin**: 管理�?
-    - **superadmin**: 超级管理�?
-    """
-    # 检查是否为超级管理�?
-    user_id = current_user.get("sub")
-    operator = db.query(User).filter(User.id == int(user_id)).first()
-    
-    if not operator or operator.role != "superadmin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="仅超级管理员可以创建用户"
-        )
-    
-    # 检查用户名是否已存�?
-    existing_user = db.query(User).filter(User.username == user_data.username).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="用户名已存在")
-    
-    # 检查邮箱是否已存在
-    existing_email = db.query(User).filter(User.email == user_data.email).first()
-    if existing_email:
-        raise HTTPException(status_code=400, detail="邮箱已被注册")
-    
-    # 验证角色�?
-    valid_roles = ["user", "admin", "superadmin"]
-    role = user_data.role if hasattr(user_data, 'role') and user_data.role in valid_roles else "user"
-    
-    # 创建新用�?
-    user = User(
-        username=user_data.username,
-        email=user_data.email,
-        hashed_password=get_password_hash(user_data.password),
-        nickname=user_data.nickname or user_data.username,
-        phone=user_data.phone,
-        role=role,
-        is_active=True,
-        is_superuser=(role == "superadmin")
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    
-    return user
+    token_type: str
 
 
 @router.post("/login", response_model=Token, summary="用户登录")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    """
-    用户登录接口
-    
-    返回JWT访问令牌
-    """
-    # 查找用户
     user = db.query(User).filter(User.username == form_data.username).first()
-    
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="用户名或密码错误",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    # 验证密码
+        raise HTTPException(status_code=401, detail="用户名或密码错误")
     if not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="用户名或密码错误",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    # 检查用户是否激�?
+        raise HTTPException(status_code=401, detail="用户名或密码错误")
     if not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="用户已被禁用",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise HTTPException(status_code=401, detail="用户已被禁用")
     
-    # 更新最后登录时�?
-    user.last_login = datetime.now()
+    user.last_login = datetime.utcnow()
     db.commit()
     
-    # 创建访问令牌
     access_token = create_access_token(
-        data={
-            "sub": str(user.id),
-            "username": user.username,
-            "role": user.role
-        }
+        data={"sub": str(user.id), "username": user.username, "role": user.role}
     )
-    
     return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -178,33 +81,15 @@ async def get_current_user_info(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """获取当前登录用户信息"""
     user_id = current_user.get("sub")
     user = db.query(User).filter(User.id == int(user_id)).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存�?)
+        raise HTTPException(status_code=404, detail="用户不存在")
     return user
 
 
-@router.put("/me", response_model=UserResponse, summary="更新当前用户信息")
-async def update_current_user(
-    user_data: UserUpdate,
-    current_user: dict = Depends(get_current_active_user),
-    db: Session = Depends(get_db)
-):
-    """更新当前登录用户信息"""
-    # TODO: 实现更新用户信息逻辑
-    pass
-
-
 @router.post("/logout", summary="用户登出")
-async def logout(current_user: dict = Depends(get_current_active_user)):
-    """
-    用户登出接口
-    
-    JWT是无状态的，登出只需要前端清除token即可
-    这个接口主要用于记录登出日志等操�?
-    """
+async def logout():
     return {"message": "登出成功"}
 
 
@@ -216,40 +101,18 @@ async def get_users(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """
-    获取用户列表（管理员和超级管理员可用�?
-    
-    - **skip**: 跳过记录�?
-    - **limit**: 返回记录�?
-    - **keyword**: 搜索关键�?
-    
-    权限说明�?
-    - 普通用户：无权访问
-    - 管理员：可查看列�?
-    - 超级管理员：可查看列�?
-    """
-    # 检查权限：只有管理员和超级管理员可以查看用户列�?
     user_id = current_user.get("sub")
     operator = db.query(User).filter(User.id == int(user_id)).first()
-    
     if not operator or operator.role not in ["admin", "superadmin"]:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="权限不足，仅管理员可查看用户列表"
-        )
+        raise HTTPException(status_code=403, detail="权限不足")
     
-    # 构建查询
     query = db.query(User)
-    
-    # 关键词搜�?
     if keyword:
         query = query.filter(
-            (User.username.contains(keyword)) | 
+            (User.username.contains(keyword)) |
             (User.email.contains(keyword)) |
             (User.nickname.contains(keyword))
         )
-    
-    # 分页
     users = query.offset(skip).limit(limit).all()
     return users
 
@@ -260,67 +123,58 @@ async def get_user(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """
-    获取指定用户详情（管理员和超级管理员可用�?
-    """
-    # 检查权�?
     operator_id = current_user.get("sub")
     operator = db.query(User).filter(User.id == int(operator_id)).first()
-    
     if not operator or operator.role not in ["admin", "superadmin"]:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="权限不足"
-        )
+        raise HTTPException(status_code=403, detail="权限不足")
     
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="用户不存�?)
+        raise HTTPException(status_code=404, detail="用户不存在")
     return user
 
 
-@router.put("/{user_id}", response_model=UserResponse, summary="更新用户信息")
+@router.post("/create", response_model=UserResponse, summary="创建用户")
+async def create_user(
+    user_data: UserCreate,
+    current_user: dict = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    operator_id = current_user.get("sub")
+    operator = db.query(User).filter(User.id == int(operator_id)).first()
+    if not operator or operator.role != "superadmin":
+        raise HTTPException(status_code=403, detail="权限不足")
+    
+    existing = db.query(User).filter(
+        (User.username == user_data.username) | (User.email == user_data.email)
+    ).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="用户名或邮箱已存在")
+    
+    user = User(
+        username=user_data.username,
+        email=user_data.email,
+        hashed_password=get_password_hash(user_data.password),
+        nickname=user_data.nickname or user_data.username,
+        phone=user_data.phone,
+        role=user_data.role if user_data.role in ["user", "admin"] else "user",
+        is_active=True,
+        is_superuser=False
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+@router.put("/{user_id}", response_model=UserResponse, summary="更新用户")
 async def update_user(
     user_id: int,
     user_data: UserUpdate,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """
-    更新指定用户信息（仅超级管理员可用）
-    
-    权限说明�?
-    - 普通用户：无权操作
-    - 管理员：无权操作
-    - 超级管理员：可更新用户信�?
-    """
-    # 检查权限：只有超级管理员可以更新用�?
-    operator_id = current_user.get("sub")
-    operator = db.query(User).filter(User.id == int(operator_id)).first()
-    
-    if not operator or operator.role != "superadmin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="权限不足，仅超级管理员可管理用户"
-        )
-    
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="用户不存�?)
-    
-    # 更新用户信息
-    if user_data.nickname is not None:
-        user.nickname = user_data.nickname
-    if user_data.email is not None:
-        user.email = user_data.email
-    if user_data.phone is not None:
-        user.phone = user_data.phone
-    if user_data.avatar is not None:
-        user.avatar = user_data.avatar
-    
-    db.commit()
-    db.refresh(user)
-    return user
+    raise HTTPException(status_code=501, detail="功能开发中")
 
 
 @router.delete("/{user_id}", summary="删除用户")
@@ -329,71 +183,13 @@ async def delete_user(
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """
-    删除指定用户（仅超级管理员可用）
-    
-    权限说明�?
-    - 普通用户：无权操作
-    - 管理员：无权操作
-    - 超级管理员：可删除用�?
-    """
-    # 检查权限：只有超级管理员可以删除用�?
-    operator_id = current_user.get("sub")
-    operator = db.query(User).filter(User.id == int(operator_id)).first()
-    
-    if not operator or operator.role != "superadmin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="权限不足，仅超级管理员可管理用户"
-        )
-    
-    # 不能删除自己
-    if user_id == int(operator_id):
-        raise HTTPException(status_code=400, detail="不能删除自己")
-    
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="用户不存�?)
-    
-    db.delete(user)
-    db.commit()
-    return {"message": "删除成功"}
+    raise HTTPException(status_code=501, detail="功能开发中")
 
 
-@router.post("/{user_id}/toggle-status", summary="切换用户状�?)
+@router.post("/{user_id}/toggle-status", summary="切换用户状态")
 async def toggle_user_status(
     user_id: int,
     current_user: dict = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """
-    启用/禁用用户（仅超级管理员可用）
-    
-    权限说明�?
-    - 普通用户：无权操作
-    - 管理员：无权操作
-    - 超级管理员：可切换用户状�?
-    """
-    # 检查权限：只有超级管理员可以切换用户状�?
-    operator_id = current_user.get("sub")
-    operator = db.query(User).filter(User.id == int(operator_id)).first()
-    
-    if not operator or operator.role != "superadmin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="权限不足，仅超级管理员可管理用户"
-        )
-    
-    # 不能禁用自己
-    if user_id == int(operator_id):
-        raise HTTPException(status_code=400, detail="不能禁用自己")
-    
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="用户不存�?)
-    
-    user.is_active = not user.is_active
-    db.commit()
-    db.refresh(user)
-    return {"message": "操作成功", "is_active": user.is_active}
-
+    raise HTTPException(status_code=501, detail="功能开发中")
