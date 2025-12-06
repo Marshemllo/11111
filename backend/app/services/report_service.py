@@ -134,6 +134,16 @@ class ReportService:
         Returns:
             PDF文件路径
         """
+        from reportlab.lib.pagesizes import A4
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import cm
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+        from reportlab.lib import colors
+        from reportlab.pdfbase import pdfmetrics
+        from reportlab.pdfbase.ttfonts import TTFont
+        import markdown
+        import re
+        
         report = self.get_by_id(report_id)
         if not report:
             return None
@@ -146,8 +156,122 @@ class ReportService:
         pdf_filename = f"report_{report_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"
         pdf_path = os.path.join(report_dir, pdf_filename)
         
-        # TODO: 实现PDF生成逻辑
-        # 可以使用 weasyprint, reportlab, pdfkit 等库
+        # 注册中文字体（使用系统自带的微软雅黑）
+        try:
+            font_path = "C:/Windows/Fonts/msyh.ttc"
+            if os.path.exists(font_path):
+                pdfmetrics.registerFont(TTFont('MSYaHei', font_path))
+                chinese_font = 'MSYaHei'
+            else:
+                chinese_font = 'Helvetica'
+        except Exception:
+            chinese_font = 'Helvetica'
+        
+        # 创建PDF文档
+        doc = SimpleDocTemplate(
+            pdf_path,
+            pagesize=A4,
+            rightMargin=2*cm,
+            leftMargin=2*cm,
+            topMargin=2*cm,
+            bottomMargin=2*cm
+        )
+        
+        # 样式
+        styles = getSampleStyleSheet()
+        title_style = ParagraphStyle(
+            'ChineseTitle',
+            parent=styles['Title'],
+            fontName=chinese_font,
+            fontSize=18,
+            spaceAfter=30
+        )
+        heading_style = ParagraphStyle(
+            'ChineseHeading',
+            parent=styles['Heading2'],
+            fontName=chinese_font,
+            fontSize=14,
+            spaceBefore=20,
+            spaceAfter=10
+        )
+        body_style = ParagraphStyle(
+            'ChineseBody',
+            parent=styles['Normal'],
+            fontName=chinese_font,
+            fontSize=11,
+            leading=18,
+            spaceAfter=10
+        )
+        
+        # 构建PDF内容
+        story = []
+        
+        # 标题
+        story.append(Paragraph(report.title, title_style))
+        story.append(Spacer(1, 0.5*cm))
+        
+        # 元信息表格
+        meta_data = [
+            ['行业分类', report.industry or '未分类'],
+            ['报告类型', report.report_type or '未知'],
+            ['数据来源', report.data_source or '未知'],
+            ['创建时间', report.created_at.strftime('%Y-%m-%d %H:%M:%S') if report.created_at else '未知'],
+        ]
+        meta_table = Table(meta_data, colWidths=[3*cm, 10*cm])
+        meta_table.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), chinese_font),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 5),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ]))
+        story.append(meta_table)
+        story.append(Spacer(1, 1*cm))
+        
+        # 摘要
+        if report.summary:
+            story.append(Paragraph('摘要', heading_style))
+            story.append(Paragraph(report.summary, body_style))
+            story.append(Spacer(1, 0.5*cm))
+        
+        # 正文内容
+        if report.content:
+            story.append(Paragraph('报告内容', heading_style))
+            # 将Markdown转换为纯文本段落
+            content_text = report.content
+            # 移除Markdown标记
+            content_text = re.sub(r'#{1,6}\s*', '', content_text)  # 移除标题标记
+            content_text = re.sub(r'\*\*([^*]+)\*\*', r'\1', content_text)  # 移除粗体
+            content_text = re.sub(r'\*([^*]+)\*', r'\1', content_text)  # 移除斜体
+            content_text = re.sub(r'`([^`]+)`', r'\1', content_text)  # 移除代码标记
+            
+            # 按段落分割
+            paragraphs = content_text.split('\n\n')
+            for para in paragraphs:
+                para = para.strip()
+                if para:
+                    # 处理列表项
+                    if para.startswith('- ') or para.startswith('* '):
+                        para = '• ' + para[2:]
+                    story.append(Paragraph(para, body_style))
+        
+        # 页脚信息
+        story.append(Spacer(1, 2*cm))
+        footer_style = ParagraphStyle(
+            'Footer',
+            parent=styles['Normal'],
+            fontName=chinese_font,
+            fontSize=9,
+            textColor=colors.grey
+        )
+        story.append(Paragraph('--- 本报告由智能数据分析平台自动生成 ---', footer_style))
+        
+        # 生成PDF
+        doc.build(story)
         
         # 更新报告的PDF路径
         report.pdf_path = pdf_path

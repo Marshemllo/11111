@@ -31,6 +31,7 @@ openai==1.10.0
 # PDF
 weasyprint==60.2
 reportlab==4.0.8
+markdown==3.5.2
 
 # Data processing
 pandas==2.1.4
