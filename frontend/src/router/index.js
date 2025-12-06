@@ -58,6 +58,12 @@ const routes = [
         name: 'Chat',
         component: () => import('@/views/chat/index.vue'),
         meta: { title: '在线聊天', icon: 'ChatDotRound' }
+      },
+      {
+        path: 'crawler',
+        name: 'Crawler',
+        component: () => import('@/views/crawler/index.vue'),
+        meta: { title: '数据采集', icon: 'Download' }
       }
     ]
   },

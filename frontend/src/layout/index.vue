@@ -43,6 +43,10 @@
           <el-icon><ChatDotRound /></el-icon>
           <template #title>在线聊天</template>
         </el-menu-item>
+        <el-menu-item index="/crawler">
+          <el-icon><Download /></el-icon>
+          <template #title>数据采集</template>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     
