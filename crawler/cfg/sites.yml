@@ -1,0 +1,197 @@
+# 站点配置文件
+# 定义各平台的入口、频率、解析规则等
+
+# ==================== 微博配置 ====================
+weibo:
+  # 是否启用
+  enabled: true
+  
+  # 爬取频率（秒）
+  crawl_interval: 3600  # 1小时
+  
+  # 并发数
+  concurrent_requests: 4
+  
+  # 下载延迟（秒）
+  download_delay: 2
+  
+  # API端点
+  endpoints:
+    search: "https://m.weibo.cn/api/container/getIndex"
+    user: "https://m.weibo.cn/api/container/getIndex"
+    comments: "https://m.weibo.cn/comments/hotflow"
+    detail: "https://m.weibo.cn/statuses/show"
+  
+  # 请求头
+  headers:
+    Accept: "application/json, text/plain, */*"
+    Accept-Language: "zh-CN,zh;q=0.9"
+    Referer: "https://m.weibo.cn/"
+    X-Requested-With: "XMLHttpRequest"
+  
+  # 分页配置
+  pagination:
+    max_pages: 50
+    page_size: 20
+  
+  # 解析规则
+  parse_rules:
+    # 搜索结果
+    search:
+      cards_path: "data.cards"
+      card_type: 9
+      mblog_path: "mblog"
+    
+    # 微博详情
+    detail:
+      mid: "mid"
+      text: "text"
+      user: "user"
+      created_at: "created_at"
+      reposts_count: "reposts_count"
+      comments_count: "comments_count"
+      attitudes_count: "attitudes_count"
+  
+  # Cookie配置
+  cookie:
+    required: true
+    pool_key: "crawler:cookies:weibo"
+
+# ==================== 知乎配置 ====================
+zhihu:
+  enabled: true
+  crawl_interval: 3600
+  concurrent_requests: 4
+  download_delay: 2
+  
+  endpoints:
+    search: "https://www.zhihu.com/api/v4/search_v3"
+    question: "https://www.zhihu.com/api/v4/questions/{qid}/feeds"
+    answers: "https://www.zhihu.com/api/v4/questions/{qid}/answers"
+    hot_list: "https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total"
+    topic: "https://www.zhihu.com/api/v4/topics/{tid}/feeds/essence"
+  
+  headers:
+    Accept: "application/json, text/plain, */*"
+    Accept-Language: "zh-CN,zh;q=0.9"
+    Referer: "https://www.zhihu.com/"
+    x-requested-with: "fetch"
+  
+  pagination:
+    max_offset: 200
+    limit: 20
+  
+  parse_rules:
+    answer:
+      id: "id"
+      content: "content"
+      excerpt: "excerpt"
+      voteup_count: "voteup_count"
+      comment_count: "comment_count"
+      created_time: "created_time"
+      author: "author"
+      question: "question"
+  
+  cookie:
+    required: true
+    pool_key: "crawler:cookies:zhihu"
+
+# ==================== 抖音配置 ====================
+douyin:
+  enabled: false  # 需要签名算法支持
+  crawl_interval: 3600
+  concurrent_requests: 2
+  download_delay: 3
+  
+  endpoints:
+    search: "https://www.douyin.com/aweme/v1/web/search/item/"
+    user: "https://www.douyin.com/aweme/v1/web/aweme/post/"
+    detail: "https://www.douyin.com/aweme/v1/web/aweme/detail/"
+    comments: "https://www.douyin.com/aweme/v1/web/comment/list/"
+  
+  headers:
+    Accept: "application/json, text/plain, */*"
+    Accept-Language: "zh-CN,zh;q=0.9"
+    Referer: "https://www.douyin.com/"
+  
+  # 设备参数
+  device:
+    device_platform: "webapp"
+    aid: "6383"
+    channel: "channel_pc_web"
+  
+  pagination:
+    max_cursor: 10
+    count: 20
+  
+  # 签名配置
+  sign:
+    required: true
+    type: "x-bogus"  # x-bogus / a-bogus
+
+# ==================== 头条配置 ====================
+toutiao:
+  enabled: false
+  crawl_interval: 3600
+  concurrent_requests: 4
+  download_delay: 2
+  
+  endpoints:
+    search: "https://www.toutiao.com/api/search/content/"
+    feed: "https://www.toutiao.com/api/pc/feed/"
+  
+  headers:
+    Accept: "application/json, text/plain, */*"
+    Referer: "https://www.toutiao.com/"
+  
+  pagination:
+    max_offset: 100
+    count: 20
+
+# ==================== 小红书配置 ====================
+xiaohongshu:
+  enabled: false
+  crawl_interval: 3600
+  concurrent_requests: 2
+  download_delay: 3
+  
+  endpoints:
+    search: "https://edith.xiaohongshu.com/api/sns/web/v1/search/notes"
+    note: "https://edith.xiaohongshu.com/api/sns/web/v1/feed"
+  
+  headers:
+    Accept: "application/json, text/plain, */*"
+    Origin: "https://www.xiaohongshu.com"
+    Referer: "https://www.xiaohongshu.com/"
+  
+  sign:
+    required: true
+    type: "x-s"
+
+# ==================== 全局配置 ====================
+global:
+  # 代理配置
+  proxy:
+    enabled: true
+    pool_url: "http://localhost:5010/get"
+  
+  # 重试配置
+  retry:
+    times: 3
+    http_codes: [500, 502, 503, 504, 408, 429]
+  
+  # 超时配置
+  timeout: 30
+  
+  # 日志级别
+  log_level: "INFO"
+  
+  # 存储配置
+  storage:
+    mongodb:
+      uri: "mongodb://localhost:27017"
+      database: "crawler"
+    redis:
+      host: "localhost"
+      port: 6379
+      db: 0
