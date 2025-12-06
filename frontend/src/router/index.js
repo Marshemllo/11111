@@ -68,6 +68,12 @@ const routes = [
     meta: { title: '数据大屏', requiresAuth: true }
   },
   {
+    path: '/bigscreen',
+    name: 'BigScreen',
+    component: () => import('@/views/dashboard/bigscreen.vue'),
+    meta: { title: '舆情大数据监控大屏', requiresAuth: false }
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/views/error/404.vue'),

@@ -54,10 +54,16 @@
         <div class="chart-card">
           <div class="chart-header">
             <h3>数据趋势</h3>
-            <el-button type="primary" link @click="goFullscreen">
-              <el-icon><FullScreen /></el-icon>
-              全屏大屏
-            </el-button>
+            <div class="header-actions">
+              <el-button type="success" @click="goBigScreen">
+                <el-icon><Monitor /></el-icon>
+                舆情大屏
+              </el-button>
+              <el-button type="primary" link @click="goFullscreen">
+                <el-icon><FullScreen /></el-icon>
+                全屏大屏
+              </el-button>
+            </div>
           </div>
           <div ref="trendChartRef" class="chart-container"></div>
         </div>
@@ -247,6 +253,11 @@ const handleResize = () => {
 // 跳转全屏大屏
 const goFullscreen = () => {
   router.push('/fullscreen-dashboard')
+}
+
+// 跳转舆情大屏
+const goBigScreen = () => {
+  router.push('/bigscreen')
 }
 
 // AI查询

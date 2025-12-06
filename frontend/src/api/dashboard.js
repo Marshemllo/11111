@@ -62,3 +62,17 @@ export function aiDataAnalysis(data) {
 export function getRankingData(params) {
   return request.get('/dashboard/ranking', { params })
 }
+
+/**
+ * 获取全国地区热力数据
+ */
+export function getHeatmapData() {
+  return request.get('/dashboard/heatmap')
+}
+
+/**
+ * 获取最新采集的20条数据
+ */
+export function getLatestData(limit = 20) {
+  return request.get('/dashboard/latest', { params: { limit } })
+}
