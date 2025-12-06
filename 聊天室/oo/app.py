@@ -69,14 +69,91 @@ def handle_message(data):
     msg = data['msg']
     room = 'general'
     # Simple echo/broadcast
-    # Logic for @mentions can be processed here or on client. 
-    # Requirement: "receive and response". We just broadcast.
     emit('message', {'username': username, 'msg': msg}, room=room)
+    
     text = str(msg).strip()
+    
+    # @成小理 - AI 智能回复
     if text.startswith('@成小理'):
         q = text[len('@成小理'):].strip() or '请用简洁中文回答'
         reply = siliconflow_reply(q)
         emit('message', {'username': '成小理', 'msg': reply}, room=room)
+    
+    # @音乐一下 - 音乐推荐
+    elif text.startswith('@音乐一下') or text.startswith('@音乐'):
+        query = text.replace('@音乐一下', '').replace('@音乐', '').strip()
+        reply = handle_music_request(query)
+        emit('message', {'username': '🎵 音乐助手', 'msg': reply}, room=room)
+    
+    # @电影 - 电影推荐
+    elif text.startswith('@电影'):
+        query = text.replace('@电影', '').strip()
+        reply = handle_movie_request(query)
+        emit('message', {'username': '🎬 电影助手', 'msg': reply}, room=room)
+    
+    # @天气 - 天气查询
+    elif text.startswith('@天气'):
+        city = text.replace('@天气', '').strip() or '北京'
+        reply = handle_weather_request(city)
+        emit('message', {'username': '☀️ 天气助手', 'msg': reply}, room=room)
+
+
+def handle_music_request(query: str) -> str:
+    """处理音乐请求"""
+    if not query:
+        # 随机推荐
+        songs = [
+            "《晴天》 - 周杰伦",
+            "《安静》 - 周杰伦",
+            "《小幸运》 - 田馥甸",
+            "《稻香》 - 周杰伦",
+            "《夜曲》 - 周杰伦",
+            "《爱在西元前》 - 周杰伦",
+        ]
+        import random
+        song = random.choice(songs)
+        return f"🎶 为您推荐: {song}\n\n点击播放: https://music.163.com/"
+    else:
+        return f"🎵 正在为您搜索: {query}\n\n点击前往网易云音乐搜索: https://music.163.com/#/search/m/?s={query}"
+
+
+def handle_movie_request(query: str) -> str:
+    """处理电影请求"""
+    if not query:
+        movies = [
+            "《肖申克的救赎》 - 豆瓣 9.7",
+            "《阿甘正传》 - 豆瓣 9.6",
+            "《泰坦尼克号》 - 豆瓣 9.5",
+            "《这个杀手不太冷》 - 豆瓣 9.4",
+            "《盗梦空间》 - 豆瓣 9.4",
+            "《星际穿越》 - 豆瓣 9.4",
+        ]
+        import random
+        movie = random.choice(movies)
+        return f"🎬 为您推荐: {movie}\n\n点击查看: https://movie.douban.com/"
+    else:
+        return f"🎞️ 正在为您搜索电影: {query}\n\n点击前往豆瓣搜索: https://search.douban.com/movie/subject_search?search_text={query}"
+
+
+def handle_weather_request(city: str) -> str:
+    """处理天气请求"""
+    # 模拟天气数据，实际可接入天气API
+    weather_data = {
+        "北京": {"天气": "晴", "温度": "25°C", "湿度": "45%", "空气质量": "良"},
+        "上海": {"天气": "多云", "温度": "28°C", "湿度": "65%", "空气质量": "优"},
+        "广州": {"天气": "阴", "温度": "30°C", "湿度": "75%", "空气质量": "良"},
+        "深圳": {"天气": "小雨", "温度": "29°C", "湿度": "80%", "空气质量": "优"},
+        "成都": {"天气": "阴", "温度": "22°C", "湿度": "70%", "空气质量": "良"},
+        "武汉": {"天气": "晴", "温度": "27°C", "湿度": "55%", "空气质量": "良"},
+        "杭州": {"天气": "多云", "温度": "26°C", "湿度": "60%", "空气质量": "优"},
+        "南京": {"天气": "晴", "温度": "24°C", "湿度": "50%", "空气质量": "良"},
+    }
+    
+    if city in weather_data:
+        w = weather_data[city]
+        return f"☀️ {city}今日天气\n\n天气: {w['天气']}\n温度: {w['温度']}\n湿度: {w['湿度']}\n空气质量: {w['空气质量']}"
+    else:
+        return f"🌤️ {city}今日天气\n\n天气: 晴\n温度: 25°C\n湿度: 50%\n空气质量: 良\n\n(暂无该城市详细数据)"
 
 def siliconflow_reply(prompt: str) -> str:
     token = os.environ.get('SILICONFLOW_API_KEY')

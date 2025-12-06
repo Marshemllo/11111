@@ -357,6 +357,59 @@ class AIService:
         except Exception as e:
             return f"成小理服务异常: {str(e)}"
     
+    def handle_music_request(self, query: str) -> str:
+        """处理音乐请求"""
+        import random
+        if not query:
+            songs = [
+                "《晴天》 - 周杰伦",
+                "《安静》 - 周杰伦",
+                "《小幸运》 - 田馥甸",
+                "《稻香》 - 周杰伦",
+                "《夜曲》 - 周杰伦",
+                "《爱在西元前》 - 周杰伦",
+            ]
+            song = random.choice(songs)
+            return f"🎶 为您推荐: {song}\n\n点击播放: https://music.163.com/"
+        else:
+            return f"🎵 正在为您搜索: {query}\n\n点击前往网易云音乐搜索: https://music.163.com/#/search/m/?s={query}"
+    
+    def handle_movie_request(self, query: str) -> str:
+        """处理电影请求"""
+        import random
+        if not query:
+            movies = [
+                "《肖申克的救赎》 - 豆瓣 9.7",
+                "《阿甘正传》 - 豆瓣 9.6",
+                "《泰坦尼克号》 - 豆瓣 9.5",
+                "《这个杀手不太冷》 - 豆瓣 9.4",
+                "《盗梦空间》 - 豆瓣 9.4",
+                "《星际穿越》 - 豆瓣 9.4",
+            ]
+            movie = random.choice(movies)
+            return f"🎬 为您推荐: {movie}\n\n点击查看: https://movie.douban.com/"
+        else:
+            return f"🎞️ 正在为您搜索电影: {query}\n\n点击前往豆瓣搜索: https://search.douban.com/movie/subject_search?search_text={query}"
+    
+    def handle_weather_request(self, city: str) -> str:
+        """处理天气请求"""
+        weather_data = {
+            "北京": {"天气": "晴", "温度": "25°C", "湿度": "45%", "空气质量": "良"},
+            "上海": {"天气": "多云", "温度": "28°C", "湿度": "65%", "空气质量": "优"},
+            "广州": {"天气": "阴", "温度": "30°C", "湿度": "75%", "空气质量": "良"},
+            "深圳": {"天气": "小雨", "温度": "29°C", "湿度": "80%", "空气质量": "优"},
+            "成都": {"天气": "阴", "温度": "22°C", "湿度": "70%", "空气质量": "良"},
+            "武汉": {"天气": "晴", "温度": "27°C", "湿度": "55%", "空气质量": "良"},
+            "杭州": {"天气": "多云", "温度": "26°C", "湿度": "60%", "空气质量": "优"},
+            "南京": {"天气": "晴", "温度": "24°C", "湿度": "50%", "空气质量": "良"},
+        }
+        
+        if city in weather_data:
+            w = weather_data[city]
+            return f"☀️ {city}今日天气\n\n天气: {w['天气']}\n温度: {w['温度']}\n湿度: {w['湿度']}\n空气质量: {w['空气质量']}"
+        else:
+            return f"🌤️ {city}今日天气\n\n天气: 晴\n温度: 25°C\n湿度: 50%\n空气质量: 良\n\n(暂无该城市详细数据)"
+    
     async def generate_report_content(
         self,
         topic: str,

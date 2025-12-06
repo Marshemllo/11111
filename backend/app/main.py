@@ -119,6 +119,51 @@ async def websocket_chat(websocket: WebSocket, user_id: int):
                         room_id
                     )
                 
+                # @音乐一下 / @音乐 - 音乐推荐
+                elif content.startswith("@音乐一下") or content.startswith("@音乐"):
+                    query = content.replace("@音乐一下", "").replace("@音乐", "").strip()
+                    reply = ai_service.handle_music_request(query)
+                    await manager.broadcast_to_room(
+                        {
+                            "type": "chat_message",
+                            "user_id": 0,
+                            "username": "🎵 音乐助手",
+                            "content": reply,
+                            "is_ai": True
+                        },
+                        room_id
+                    )
+                
+                # @电影 - 电影推荐
+                elif content.startswith("@电影"):
+                    query = content.replace("@电影", "").strip()
+                    reply = ai_service.handle_movie_request(query)
+                    await manager.broadcast_to_room(
+                        {
+                            "type": "chat_message",
+                            "user_id": 0,
+                            "username": "🎬 电影助手",
+                            "content": reply,
+                            "is_ai": True
+                        },
+                        room_id
+                    )
+                
+                # @天气 - 天气查询
+                elif content.startswith("@天气"):
+                    city = content.replace("@天气", "").strip() or "北京"
+                    reply = ai_service.handle_weather_request(city)
+                    await manager.broadcast_to_room(
+                        {
+                            "type": "chat_message",
+                            "user_id": 0,
+                            "username": "☀️ 天气助手",
+                            "content": reply,
+                            "is_ai": True
+                        },
+                        room_id
+                    )
+                
                 # 检查是否是@AI命令
                 elif content.startswith("@AI") or content.startswith("@ai"):
                     # 处理AI命令
